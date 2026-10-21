@@ -1,0 +1,2114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BTG School of Public Budgets</title>
+    <meta name="description" content="A learning management system for understanding the Kenyan budget process: national and county budgets, from formulation to audit." />
+    <style>
+:root {
+  --bg: #f6f7f5;
+  --surface: #ffffff;
+  --text: #1b1f1c;
+  --muted: #5b645e;
+  --border: #dfe4e0;
+  --primary: #0b6b3a;
+  --primary-ink: #ffffff;
+  --primary-soft: #e3f1e8;
+  --accent: #b3261e;
+  --accent-soft: #fbe9e7;
+  --warn-soft: #fff4dc;
+  --radius: 12px;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 4px 16px rgba(0, 0, 0, 0.04);
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121513;
+    --surface: #1b1f1c;
+    --text: #e8ece9;
+    --muted: #9aa59e;
+    --border: #2e3530;
+    --primary: #3fb27a;
+    --primary-ink: #0b1a12;
+    --primary-soft: #1d3428;
+    --accent: #ef7a70;
+    --accent-soft: #3a1f1d;
+    --warn-soft: #3a3220;
+    --shadow: none;
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+}
+a { color: var(--primary); }
+h1, h2, h3 { line-height: 1.25; margin: 0 0 0.5em; }
+h1 { font-size: clamp(1.6rem, 3vw, 2.1rem); }
+h2 { font-size: 1.25rem; }
+h3 { font-size: 1.05rem; }
+input[type="search"], input:not([type]), input[type="text"] {
+  font: inherit;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  min-width: 0;
+}
+input:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+
+.skip { position: absolute; left: -9999px; }
+.skip:focus { left: 1rem; top: 1rem; z-index: 99; background: var(--surface); padding: 0.5rem 1rem; }
+
+/* Top bar */
+.topbar {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.brand { font-weight: 700; font-size: 1.1rem; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+.brand-mark {
+  width: 22px; height: 22px; border-radius: 6px;
+  background: linear-gradient(#111 0 30%, #fff 30% 35%, #b3261e 35% 65%, #fff 65% 70%, #0b6b3a 70%);
+  border: 1px solid var(--border);
+}
+.tagline { color: var(--muted); font-size: 0.9rem; }
+.menu-toggle { display: none; font-size: 1.3rem; background: none; border: 0; color: var(--text); cursor: pointer; padding: 0.25rem 0.5rem; }
+
+/* Layout */
+.layout { display: grid; grid-template-columns: 240px 1fr; min-height: calc(100vh - 57px); }
+.nav {
+  position: sticky; top: 57px; align-self: start;
+  height: calc(100vh - 57px);
+  padding: 1rem 0.75rem;
+  border-right: 1px solid var(--border);
+  background: var(--surface);
+  display: flex; flex-direction: column; gap: 0.2rem;
+}
+.nav a { display: flex; gap: 0.6rem; padding: 0.6rem 0.75rem; border-radius: 8px; color: var(--text); text-decoration: none; }
+.nav a:hover { background: var(--bg); }
+.nav a.active { background: var(--primary-soft); color: var(--primary); font-weight: 600; }
+.nav-note { margin-top: auto; font-size: 0.78rem; color: var(--muted); padding: 0 0.5rem; }
+main { padding: 2rem clamp(1rem, 4vw, 3rem) 4rem; max-width: 1180px; width: 100%; min-width: 0; outline: none; }
+
+/* Common */
+.lead { font-size: 1.08rem; color: var(--muted); max-width: 70ch; }
+.muted { color: var(--muted); }
+.small { font-size: 0.85rem; }
+.meta { font-size: 0.85rem; color: var(--muted); margin: 0.25rem 0 0.75rem; }
+.row { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow); }
+section > .card + .card, aside > .card { margin-top: 1rem; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+.two-col { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 2rem; margin-top: 1.5rem; }
+.crumbs { font-size: 0.88rem; color: var(--muted); margin-bottom: 1rem; }
+.crumbs a { color: var(--muted); }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+  font: inherit; font-weight: 600;
+  padding: 0.6rem 1.1rem;
+  border-radius: 8px; border: 1px solid var(--primary);
+  background: var(--primary); color: var(--primary-ink);
+  text-decoration: none; cursor: pointer;
+}
+.btn:hover { filter: brightness(1.08); }
+.btn-sm { padding: 0.35rem 0.8rem; font-size: 0.9rem; }
+.btn-ghost { background: transparent; color: var(--primary); }
+.btn-danger { background: var(--accent); border-color: var(--accent); color: #fff; }
+.file-btn { cursor: pointer; }
+
+.badge { display: inline-block; font-size: 0.75rem; font-weight: 600; padding: 0.15rem 0.55rem; border-radius: 999px; background: var(--bg); border: 1px solid var(--border); color: var(--muted); }
+.badge-beginner, .badge-national { background: var(--primary-soft); color: var(--primary); border-color: transparent; }
+.badge-intermediate, .badge-county { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+.badge-both { background: var(--warn-soft); color: var(--text); border-color: transparent; }
+.badge-done { background: var(--primary); color: var(--primary-ink); border-color: transparent; }
+
+.progress { height: 8px; background: var(--border); border-radius: 999px; overflow: hidden; }
+.progress span { display: block; height: 100%; background: var(--primary); border-radius: inherit; transition: width 0.3s; }
+
+/* Dashboard */
+.hero { margin-bottom: 1.5rem; }
+.inline-form { margin-top: 1rem; max-width: 460px; }
+.inline-form label { display: block; font-weight: 600; margin-bottom: 0.4rem; }
+.inline-form input { flex: 1; }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+.stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; display: flex; flex-direction: column; }
+.stat-num { font-size: 1.7rem; font-weight: 700; }
+.stat-label { color: var(--muted); font-size: 0.85rem; }
+.activity { list-style: none; padding: 0; margin: 0 0 1rem; }
+.activity li { padding: 0.6rem 0; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; font-size: 0.92rem; }
+.tip p { margin: 0.4rem 0 0; }
+
+/* Course cards */
+.course-card { display: flex; flex-direction: column; }
+.course-card h3 { margin-top: 0.75rem; }
+.course-card h3 a { color: var(--text); text-decoration: none; }
+.course-card h3 a:hover { color: var(--primary); }
+.course-card > p.muted { flex: 1; margin: 0; font-size: 0.93rem; }
+.card-top { display: flex; gap: 0.4rem; }
+.card-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 0.75rem; }
+.filters { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; margin: 1rem 0 1.5rem; }
+.filters input { flex: 1; min-width: 200px; max-width: 380px; }
+.chips { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.chip { font: inherit; font-size: 0.9rem; padding: 0.35rem 0.9rem; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; }
+.chip.active { background: var(--primary); color: var(--primary-ink); border-color: var(--primary); }
+
+/* Course page */
+.course-head { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 2rem; align-items: start; }
+.course-head h1 { margin-top: 0.5rem; }
+.progress-card { display: flex; flex-direction: column; gap: 0.6rem; }
+.progress-card p { margin: 0; }
+.module { margin-bottom: 1.5rem; }
+.module h3 .muted { display: block; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+.steps { list-style: none; padding: 0; margin: 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.steps li { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); }
+.steps li:last-child { border-bottom: 0; }
+.steps a { color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 0.6rem; }
+.steps a:hover { color: var(--primary); }
+.steps .tick { width: 1.4rem; height: 1.4rem; display: inline-grid; place-items: center; border-radius: 50%; border: 1.5px solid var(--border); font-size: 0.8rem; color: var(--muted); flex: none; }
+.steps li.done .tick { background: var(--primary); border-color: var(--primary); color: var(--primary-ink); }
+.steps .quiz-item { background: var(--bg); }
+.outcomes { padding-left: 1.2rem; margin: 0; }
+.outcomes li { margin-bottom: 0.5rem; }
+
+/* Lesson */
+.lesson { max-width: 760px; }
+.prose { font-size: 1.03rem; }
+.prose table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.95rem; display: block; overflow-x: auto; }
+.prose th, .prose td { text-align: left; padding: 0.55rem 0.75rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+.prose th { background: var(--primary-soft); }
+.prose h3 { margin-top: 1.5rem; }
+.prose li { margin-bottom: 0.35rem; }
+.callout { background: var(--warn-soft); border-left: 4px solid #d99a00; padding: 0.9rem 1rem; border-radius: 0 8px 8px 0; margin: 1.25rem 0; }
+.lesson-actions { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+
+/* Quiz */
+.quiz { max-width: 760px; }
+.question { border: 1px solid var(--border); background: var(--surface); border-radius: var(--radius); padding: 1rem 1.25rem; margin: 0 0 1rem; }
+.question legend { font-weight: 600; padding: 0 0.25rem; display: flex; gap: 0.6rem; align-items: baseline; }
+.qnum { display: inline-grid; place-items: center; min-width: 1.6rem; height: 1.6rem; border-radius: 50%; background: var(--primary-soft); color: var(--primary); font-size: 0.85rem; }
+.option { display: flex; gap: 0.6rem; align-items: center; padding: 0.5rem 0.6rem; border-radius: 8px; cursor: pointer; }
+.option:hover { background: var(--bg); }
+.question.correct { border-color: var(--primary); }
+.question.wrong { border-color: var(--accent); }
+.option.is-answer { background: var(--primary-soft); font-weight: 600; }
+.explain { margin: 0.6rem 0 0; font-size: 0.93rem; }
+.question.correct .explain { color: var(--primary); }
+.question.wrong .explain { color: var(--accent); }
+.result { max-width: 760px; border-width: 2px; }
+.result.pass { border-color: var(--primary); }
+.result.fail { border-color: var(--accent); }
+
+/* Calendar */
+.timeline { list-style: none; padding: 0; margin: 1.5rem 0 0; position: relative; max-width: 820px; }
+.timeline::before { content: ""; position: absolute; left: 76px; top: 0; bottom: 0; width: 2px; background: var(--border); }
+.tl-item { display: grid; grid-template-columns: 64px 1fr; gap: 2rem; margin-bottom: 1rem; position: relative; }
+.tl-item::before { content: ""; position: absolute; left: 70px; top: 1.1rem; width: 14px; height: 14px; border-radius: 50%; background: var(--surface); border: 3px solid var(--primary); }
+.tl-county::before { border-color: var(--accent); }
+.tl-both::before { border-color: #d99a00; }
+.tl-date { text-align: right; padding-top: 0.75rem; font-weight: 700; font-size: 0.9rem; line-height: 1.2; }
+.tl-body { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.9rem 1.1rem; }
+.tl-body h3 { margin: 0.4rem 0 0.2rem; }
+.tl-body p { margin: 0; font-size: 0.92rem; }
+
+/* Glossary */
+#gloss-search { width: 100%; max-width: 420px; margin: 0.5rem 0 1.5rem; }
+.glossary { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 0.75rem; margin: 0; }
+.gloss-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.9rem 1rem; }
+.gloss-item dt { font-weight: 700; color: var(--primary); }
+.gloss-item dd { margin: 0.25rem 0 0; font-size: 0.93rem; }
+
+/* Profile */
+.danger { border-color: var(--accent); }
+#profile-form input { flex: 1; max-width: 320px; }
+
+/* Certificate */
+.cert-actions { display: flex; justify-content: space-between; margin-bottom: 1rem; }
+.certificate {
+  background: #fffdf7; color: #1b1f1c;
+  border: 10px double #0b6b3a;
+  border-radius: 6px;
+  padding: 3rem 2rem;
+  text-align: center;
+  max-width: 820px; margin: 0 auto;
+  position: relative;
+}
+.flag-bar { display: flex; height: 8px; width: 160px; margin: 0 auto 1.5rem; border-radius: 4px; overflow: hidden; }
+.flag-bar span { flex: 1; }
+.flag-bar span:nth-child(1) { background: #111; }
+.flag-bar span:nth-child(2), .flag-bar span:nth-child(4) { background: #fff; flex: 0.3; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; }
+.flag-bar span:nth-child(3) { background: #b3261e; }
+.flag-bar span:nth-child(5) { background: #0b6b3a; }
+.cert-kicker { text-transform: uppercase; letter-spacing: 0.2em; font-weight: 700; color: #0b6b3a; }
+.cert-name { font-family: Georgia, "Times New Roman", serif; font-size: clamp(1.8rem, 5vw, 2.8rem); margin: 0.5rem 0; border-bottom: 1px solid #ccc; display: inline-block; padding: 0 1.5rem 0.4rem; }
+.cert-course { font-size: 1.4rem; color: #0b6b3a; }
+.certificate .muted { color: #5b645e; }
+.cert-org { margin-top: 2rem; font-weight: 600; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .two-col, .course-head { grid-template-columns: 1fr; }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .menu-toggle { display: block; }
+  .tagline { display: none; }
+  .layout { grid-template-columns: 1fr; }
+  .nav { position: fixed; top: 57px; left: 0; width: 260px; z-index: 15; transform: translateX(-100%); transition: transform 0.2s; box-shadow: var(--shadow); }
+  body.nav-open .nav { transform: none; }
+  main { padding: 1.25rem 1rem 3rem; }
+  .grid, .glossary { grid-template-columns: 1fr; }
+  .timeline::before { left: 56px; }
+  .tl-item { grid-template-columns: 48px 1fr; gap: 1.6rem; }
+  .tl-item::before { left: 50px; }
+}
+
+@media print {
+  .topbar, .nav, .no-print, .skip { display: none !important; }
+  .layout { display: block; }
+  main { padding: 0; }
+  body { background: #fff; }
+}
+
+/* Accounts, instructor dashboard, notifications */
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.between { justify-content: space-between; }
+.section-gap { margin-top: 2rem; }
+.row h2, .row h3 { margin: 0; }
+.auth { max-width: 440px; margin: 2rem auto; }
+.stack { display: flex; flex-direction: column; gap: 1rem; }
+.stack label { display: flex; flex-direction: column; gap: 0.35rem; font-weight: 600; }
+.stack label .small { font-weight: 400; }
+.stack input { font: inherit; padding: 0.6rem 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); }
+.btn:disabled { opacity: 0.6; cursor: progress; }
+.nav-user { margin-top: auto; padding: 0.75rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; }
+.nav-user + .nav-note { margin-top: 0.5rem; }
+.link-btn { font: inherit; font-size: 0.85rem; background: none; border: 0; color: var(--primary); cursor: pointer; text-decoration: underline; padding: 0; }
+.toast { position: fixed; bottom: 1.25rem; left: 50%; transform: translateX(-50%); z-index: 50; max-width: calc(100% - 2rem); padding: 0.75rem 1.1rem; border-radius: 8px; box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18); font-weight: 600; }
+.toast-error { background: var(--accent); color: #fff; }
+.toast-ok { background: var(--primary); color: var(--primary-ink); }
+.table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.data-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+.data-table th, .data-table td { text-align: left; padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--border); vertical-align: middle; white-space: nowrap; }
+.data-table tr:last-child td { border-bottom: 0; }
+.data-table th { background: var(--bg); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; color: var(--muted); }
+.data-table.compact th, .data-table.compact td { padding: 0.4rem 0.6rem; }
+.card .table-wrap { margin-top: 0.75rem; }
+.cell-bar { display: flex; align-items: center; gap: 0.5rem; min-width: 110px; }
+.cell-bar .progress { flex: 1; height: 6px; }
+.cell-bar > span { font-size: 0.8rem; min-width: 2.6rem; text-align: right; }
+.cert-code { margin-top: 1.5rem; font-size: 0.8rem; color: #5b645e; word-break: break-all; }
+#learner-search, #verify-code { min-width: 220px; }
+
+/* Keep the header one line high (the mobile nav is positioned below it) */
+.brand { min-width: 0; white-space: nowrap; }
+.brand [data-site-name] { overflow: hidden; text-overflow: ellipsis; }
+.brand-mark { flex: none; }
+@media (max-width: 360px) { .brand { font-size: 0.86rem; gap: 0.4rem; } }
+
+</style>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%98%3C/text%3E%3C/svg%3E" />
+  </head>
+  <body>
+    <a class="skip" href="#view">Skip to content</a>
+    <header class="topbar">
+      <button id="menu-toggle" class="menu-toggle" aria-label="Toggle navigation">☰</button>
+      <a class="brand" href="#/"><span class="brand-mark" aria-hidden="true"></span><span data-site-name>BTG School of Public Budgets</span></a>
+      <span class="tagline" data-site-tagline>The Kenyan Budget Process</span>
+    </header>
+    <div class="layout">
+      <nav class="nav" id="nav" aria-label="Main"></nav>
+      <main id="view" tabindex="-1"></main>
+    </div>
+    <script>
+/*
+ * Course catalogue, budget calendar and glossary for the Kenyan Budget Process LMS.
+ *
+ * Sources: Constitution of Kenya 2010 (Chapter Twelve, Public Finance) and the
+ * Public Finance Management (PFM) Act 2012. Dates are statutory deadlines; always
+ * confirm against the latest amendments and the current Budget Calendar.
+ */
+(function (root) {
+  // Branding. Change these to rename the site; they appear in the header, page titles and certificates.
+  const SITE = {
+    name: "BTG School of Public Budgets",
+    tagline: "The Kenyan Budget Process",
+    contentReviewed: "October 2026",
+    disclaimer:
+      "Content is based on the Constitution of Kenya 2010 and the PFM Act 2012 (as amended). It is for learning only, not legal advice.",
+  };
+
+  const COURSES = [
+    {
+      id: "foundations",
+      title: "Foundations of Public Finance in Kenya",
+      level: "Beginner",
+      hours: 1.5,
+      summary:
+        "What a public budget is, why it matters, and the constitutional rules that govern every shilling the government raises and spends.",
+      outcomes: [
+        "Explain what a national budget is and the Kenyan financial year",
+        "Name the principles of public finance in Article 201",
+        "Distinguish the Consolidated Fund, County Revenue Funds and the Contingencies Fund",
+        "Describe how revenue is shared between national and county governments",
+      ],
+      modules: [
+        {
+          id: "basics",
+          title: "Budget Basics",
+          lessons: [
+            {
+              id: "what-is-a-budget",
+              title: "What is a public budget?",
+              minutes: 8,
+              body: `
+<p>A <strong>public budget</strong> is the government's plan for how it will raise money (<em>revenue</em>) and how it will spend it (<em>expenditure</em>) over a year. In Kenya the budget is also a <strong>law</strong>: spending is authorised through an Appropriation Act passed by Parliament (or, for counties, by the county assembly).</p>
+<h3>Three questions every budget answers</h3>
+<ol>
+  <li><strong>How much will we collect?</strong> Taxes (income tax, VAT, excise), fees, levies, grants and loans.</li>
+  <li><strong>What will we spend it on?</strong> Salaries, operations, development projects, debt repayment and transfers to counties.</li>
+  <li><strong>How will we cover any gap?</strong> If spending exceeds revenue, the difference (the <em>fiscal deficit</em>) is financed by borrowing.</li>
+</ol>
+<h3>Recurrent vs development spending</h3>
+<p><strong>Recurrent expenditure</strong> covers the day-to-day running of government: wages, utilities, fuel, maintenance. <strong>Development expenditure</strong> creates long-term assets: roads, hospitals, classrooms, water systems. Kenyan law sets minimum shares for development spending, which you will meet in later courses.</p>
+<div class="callout"><strong>Why it matters to you:</strong> the budget decides whether a local dispensary gets drugs, whether a road is tarmacked, and how much tax you pay. Citizens have a constitutional right to take part in this process.</div>`,
+            },
+            {
+              id: "financial-year",
+              title: "The financial year and the budget cycle",
+              minutes: 7,
+              body: `
+<p>Kenya's <strong>financial year (FY)</strong> runs from <strong>1 July to 30 June</strong>. A budget labelled "FY 2026/27" covers 1 July 2026 to 30 June 2027.</p>
+<h3>The four stages of the cycle</h3>
+<table>
+  <thead><tr><th>Stage</th><th>What happens</th><th>Lead actors</th></tr></thead>
+  <tbody>
+    <tr><td>1. Formulation</td><td>Priorities set, ceilings agreed, estimates prepared</td><td>National Treasury, ministries, Sector Working Groups</td></tr>
+    <tr><td>2. Approval</td><td>Legislature scrutinises and passes the budget</td><td>National Assembly, Budget &amp; Appropriations Committee</td></tr>
+    <tr><td>3. Implementation</td><td>Funds released and spent</td><td>National Treasury, ministries, Controller of Budget</td></tr>
+    <tr><td>4. Audit &amp; evaluation</td><td>Accounts audited, results reviewed</td><td>Auditor-General, Public Accounts Committee</td></tr>
+  </tbody>
+</table>
+<p>The stages overlap. In any given month the government is <em>implementing</em> this year's budget, <em>auditing</em> last year's, and <em>formulating</em> next year's.</p>
+<p>Planning is <strong>medium-term</strong>. Under the <strong>Medium-Term Expenditure Framework (MTEF)</strong>, each budget sets firm figures for the coming year plus projections for the two years after it.</p>`,
+            },
+          ],
+          quiz: {
+            id: "q-basics",
+            questions: [
+              {
+                q: "When does Kenya's financial year begin?",
+                options: ["1 January", "1 April", "1 July", "1 October"],
+                answer: 2,
+                explain: "The financial year runs from 1 July to 30 June.",
+              },
+              {
+                q: "Building a new county referral hospital is an example of…",
+                options: ["Recurrent expenditure", "Development expenditure", "A fiscal deficit", "Revenue"],
+                answer: 1,
+                explain: "It creates a long-term asset, so it is development expenditure.",
+              },
+              {
+                q: "Which stage of the cycle involves the Auditor-General?",
+                options: ["Formulation", "Approval", "Implementation", "Audit & evaluation"],
+                answer: 3,
+                explain: "The Auditor-General audits accounts after the financial year ends.",
+              },
+              {
+                q: "How many years does the MTEF cover?",
+                options: ["One year", "Three years", "Five years", "Ten years"],
+                answer: 1,
+                explain: "The MTEF covers the budget year plus two outer years.",
+              },
+            ],
+          },
+        },
+        {
+          id: "constitution",
+          title: "The Constitutional Framework",
+          lessons: [
+            {
+              id: "article-201",
+              title: "Principles of public finance (Article 201)",
+              minutes: 8,
+              body: `
+<p>Chapter Twelve of the Constitution of Kenya 2010 governs public finance. <strong>Article 201</strong> sets the principles that guide every public finance decision:</p>
+<ol type="a">
+  <li><strong>Openness, accountability and public participation</strong> in financial matters.</li>
+  <li>The public finance system promotes an <strong>equitable society</strong>: taxation is shared fairly, revenue is shared equitably between national and county governments, and expenditure promotes equitable development, including special provision for marginalised groups and areas.</li>
+  <li>The burdens and benefits of using resources and of public borrowing are <strong>shared fairly between present and future generations</strong>.</li>
+  <li>Public money is used in a <strong>prudent and responsible way</strong>.</li>
+  <li>Financial management is responsible, and <strong>fiscal reporting is clear</strong>.</li>
+</ol>
+<div class="callout">Article 201(a) is the constitutional basis for <strong>public participation</strong> in the budget. Government must involve citizens, not just inform them.</div>`,
+            },
+            {
+              id: "public-funds",
+              title: "Where public money is kept",
+              minutes: 7,
+              body: `
+<p>The Constitution establishes several public funds:</p>
+<ul>
+  <li><strong>Consolidated Fund (Art. 206):</strong> all money raised or received by or on behalf of the national government goes here, unless an Act of Parliament excludes it. Money may only be withdrawn with the approval of the <strong>Controller of Budget</strong> and under an Appropriation Act or other law.</li>
+  <li><strong>County Revenue Fund (Art. 207):</strong> each of the 47 counties has one, holding county revenue and its share of national revenue.</li>
+  <li><strong>Contingencies Fund (Art. 208):</strong> for urgent and unforeseen needs for which there is no other authority to spend.</li>
+  <li><strong>Equalisation Fund (Art. 204):</strong> one half per cent of national revenue each year, used to provide basic services (water, roads, health facilities, electricity) in marginalised areas.</li>
+</ul>
+<h3>Protecting the funds</h3>
+<p>The <strong>Controller of Budget (Art. 228)</strong> oversees implementation of national and county budgets by authorising withdrawals from public funds, and reports to Parliament every four months.</p>`,
+            },
+            {
+              id: "revenue-sharing",
+              title: "Sharing revenue between the two levels of government",
+              minutes: 9,
+              body: `
+<p>Kenya has two levels of government: national and 47 county governments. The Constitution guarantees counties a share of nationally raised revenue.</p>
+<h3>Key rules</h3>
+<ul>
+  <li><strong>Minimum 15% (Art. 203(2)):</strong> counties' equitable share must be at least 15% of all revenue collected by the national government, based on the most recent audited accounts approved by the National Assembly.</li>
+  <li><strong>Commission on Revenue Allocation (CRA, Arts. 215-216):</strong> makes recommendations on how revenue should be shared, both between the two levels and among counties.</li>
+  <li><strong>Senate (Art. 217):</strong> determines the basis (formula) for allocating revenue among counties.</li>
+</ul>
+<h3>The two annual Bills (Art. 218)</h3>
+<table>
+  <thead><tr><th>Bill</th><th>What it does</th></tr></thead>
+  <tbody>
+    <tr><td>Division of Revenue Bill</td><td>Splits revenue <em>vertically</em> between national and county governments</td></tr>
+    <tr><td>County Allocation of Revenue Bill</td><td>Splits the county share <em>horizontally</em> among the 47 counties</td></tr>
+  </tbody>
+</table>`,
+            },
+          ],
+          quiz: {
+            id: "q-constitution",
+            questions: [
+              {
+                q: "Which Article sets out the principles of public finance?",
+                options: ["Article 10", "Article 201", "Article 221", "Article 229"],
+                answer: 1,
+                explain: "Article 201 lists the principles, starting with openness, accountability and public participation.",
+              },
+              {
+                q: "Who must approve withdrawals from the Consolidated Fund?",
+                options: ["The Auditor-General", "The Controller of Budget", "The Central Bank Governor", "The Senate"],
+                answer: 1,
+                explain: "The Controller of Budget approves withdrawals from public funds.",
+              },
+              {
+                q: "Counties must receive at least what share of nationally raised revenue?",
+                options: ["5%", "10%", "15%", "30%"],
+                answer: 2,
+                explain: "Article 203(2) sets a floor of 15%, based on the latest audited and approved accounts.",
+              },
+              {
+                q: "Which Bill divides the county share among the 47 counties?",
+                options: ["Finance Bill", "Appropriation Bill", "Division of Revenue Bill", "County Allocation of Revenue Bill"],
+                answer: 3,
+                explain: "The County Allocation of Revenue Bill does the horizontal split among counties.",
+              },
+              {
+                q: "The Equalisation Fund receives how much of national revenue each year?",
+                options: ["0.5%", "1%", "2.5%", "15%"],
+                answer: 0,
+                explain: "Article 204 sets it at one half per cent.",
+              },
+            ],
+          },
+        },
+      ],
+    },
+    {
+      id: "national-cycle",
+      title: "The National Budget Cycle",
+      level: "Intermediate",
+      hours: 2.5,
+      summary:
+        "Follow the national budget from the Treasury circular in August, through Parliament, to spending and audit, with every key document and deadline.",
+      outcomes: [
+        "Sequence the key national budget documents and their statutory deadlines",
+        "Explain the role of the Budget and Appropriations Committee",
+        "Describe vote on account and supplementary budgets",
+        "Apply the fiscal responsibility principles in the PFM Act",
+      ],
+      modules: [
+        {
+          id: "formulation",
+          title: "Formulation",
+          lessons: [
+            {
+              id: "circular-brop",
+              title: "Budget circular and the BROP",
+              minutes: 8,
+              body: `
+<p>Formulation begins about ten months before the financial year starts.</p>
+<h3>Treasury Budget Circular, by 30 August</h3>
+<p>The Cabinet Secretary for the National Treasury issues a circular to all ministries, departments and agencies (MDAs). It sets out the budget calendar, the guidelines for preparing estimates, and the format for submissions.</p>
+<h3>Budget Review and Outlook Paper (BROP), by 30 September</h3>
+<p>The BROP looks <em>back</em> and <em>forward</em>:</p>
+<ul>
+  <li>It reviews actual fiscal performance in the previous year against the approved budget.</li>
+  <li>It updates economic and financial forecasts.</li>
+  <li>It sets <strong>provisional sector ceilings</strong> for the next budget.</li>
+</ul>
+<p>The BROP goes to Cabinet for approval. It is then laid before Parliament and published.</p>`,
+            },
+            {
+              id: "swg-bps",
+              title: "Sector Working Groups and the Budget Policy Statement",
+              minutes: 10,
+              body: `
+<h3>Sector Working Groups (SWGs)</h3>
+<p>Spending is organised into sectors (for example Education; Health; Agriculture, Rural &amp; Urban Development; Energy, Infrastructure &amp; ICT). Each SWG brings together government, development partners, the private sector and civil society. Together they:</p>
+<ul>
+  <li>review sector performance,</li>
+  <li>prioritise programmes within the provisional ceiling, and</li>
+  <li>prepare an MTEF sector report.</li>
+</ul>
+<p>The Treasury holds <strong>public sector hearings</strong> where the public can comment on sector proposals.</p>
+<h3>Budget Policy Statement (BPS), by 15 February</h3>
+<p>The BPS is the government's main policy document for the coming budget. It contains:</p>
+<ul>
+  <li>the macroeconomic outlook and fiscal framework,</li>
+  <li><strong>final sector ceilings</strong>,</li>
+  <li>the proposed division of revenue with counties, and</li>
+  <li>a statement of fiscal responsibility principles.</li>
+</ul>
+<p>Parliament's <strong>Budget and Appropriations Committee (BAC)</strong> reviews the BPS and reports to the National Assembly, which may amend the ceilings. Once adopted, the BPS ceilings bind the estimates. The <strong>Division of Revenue Bill</strong> and <strong>County Allocation of Revenue Bill</strong> are introduced around the same time.</p>`,
+            },
+          ],
+          quiz: {
+            id: "q-formulation",
+            questions: [
+              {
+                q: "By what date must the Treasury issue the budget circular?",
+                options: ["30 June", "30 August", "30 September", "15 February"],
+                answer: 1,
+                explain: "The circular is due by 30 August.",
+              },
+              {
+                q: "Which document sets FINAL sector ceilings?",
+                options: ["BROP", "Budget Policy Statement", "Budget circular", "Appropriation Act"],
+                answer: 1,
+                explain: "The BROP sets provisional ceilings. The BPS sets final ones.",
+              },
+              {
+                q: "The BPS must be submitted to Parliament by…",
+                options: ["30 September", "31 December", "15 February", "30 April"],
+                answer: 2,
+                explain: "The PFM Act requires the BPS by 15 February.",
+              },
+              {
+                q: "What do Sector Working Groups produce?",
+                options: ["Audit reports", "MTEF sector reports", "The Finance Bill", "Exchequer requisitions"],
+                answer: 1,
+                explain: "SWGs prioritise programmes and prepare sector reports within the ceilings.",
+              },
+            ],
+          },
+        },
+        {
+          id: "approval",
+          title: "Approval by Parliament",
+          lessons: [
+            {
+              id: "estimates",
+              title: "Budget estimates and the Appropriation Bill",
+              minutes: 10,
+              body: `
+<h3>Submitting the estimates, by 30 April</h3>
+<p>Article 221 requires the Cabinet Secretary to submit estimates of revenue and expenditure to the National Assembly at least two months before the financial year ends. The PFM Act fixes the date at <strong>30 April</strong>. The estimates are <strong>programme-based</strong>: money is allocated to programmes with stated objectives, outputs and performance indicators.</p>
+<h3>Committee scrutiny</h3>
+<p>Departmental committees examine the estimates for their sectors and hold public hearings. The <strong>Budget and Appropriations Committee</strong> brings their recommendations together into a report to the House. The <strong>Parliamentary Budget Office (PBO)</strong> gives Members independent, non-partisan analysis.</p>
+<h3>The Appropriation Bill</h3>
+<p>Once the House approves the estimates, they become the <strong>Appropriation Bill</strong>, which must be passed by <strong>30 June</strong>. When the President assents, it becomes the Appropriation Act, the legal authority to spend.</p>
+<h3>Budget Day</h3>
+<p>In June the Cabinet Secretary reads the <strong>Budget Statement</strong> in the National Assembly. It sets out the government's priorities and its revenue measures. The tax changes are contained in the <strong>Finance Bill</strong>.</p>`,
+            },
+            {
+              id: "vote-on-account",
+              title: "Vote on account and the Finance Bill",
+              minutes: 7,
+              body: `
+<h3>Vote on account (Art. 222)</h3>
+<p>What if the Appropriation Act is not in force when the financial year begins? The National Assembly may authorise withdrawals to keep government running. These withdrawals may not exceed <strong>one half</strong> of the amounts in the estimates. They are later included in the Appropriation Act.</p>
+<h3>The Finance Bill</h3>
+<p>The Appropriation Act authorises <em>spending</em>. The <strong>Finance Bill</strong> deals with <em>revenue</em>: it amends tax laws such as the Income Tax Act, VAT Act and Excise Duty Act to raise the money the budget needs. It often attracts the most public attention, because it directly changes what citizens and businesses pay.</p>
+<h3>Election years</h3>
+<p>The statutory deadlines are the latest dates allowed, and the Treasury can move earlier. For FY 2027/28, ahead of the August 2027 General Election, the Treasury's budget calendar plans to table the Finance Bill on <strong>29 January 2027</strong> and have it passed by <strong>31 March 2027</strong>, months ahead of the usual May-June timetable. Always check the current year's budget circular.</p>
+<div class="callout">Remember: <strong>Appropriation = spending</strong>, <strong>Finance = taxes</strong>, <strong>Division of Revenue = sharing with counties</strong>.</div>`,
+            },
+          ],
+          quiz: {
+            id: "q-approval",
+            questions: [
+              {
+                q: "By what date must budget estimates reach the National Assembly?",
+                options: ["15 February", "30 April", "30 June", "1 July"],
+                answer: 1,
+                explain: "Article 221 and the PFM Act require submission by 30 April.",
+              },
+              {
+                q: "Which Bill changes tax rates?",
+                options: ["Appropriation Bill", "Finance Bill", "Division of Revenue Bill", "Supplementary Appropriation Bill"],
+                answer: 1,
+                explain: "The Finance Bill carries revenue measures.",
+              },
+              {
+                q: "A vote on account may not exceed what share of the estimates?",
+                options: ["One tenth", "One quarter", "One half", "The full amount"],
+                answer: 2,
+                explain: "Article 222 limits a vote on account to one half of the estimates.",
+              },
+              {
+                q: "Which office gives MPs independent budget analysis?",
+                options: ["Controller of Budget", "Parliamentary Budget Office", "Kenya Revenue Authority", "Auditor-General"],
+                answer: 1,
+                explain: "The Parliamentary Budget Office supports Parliament with independent analysis.",
+              },
+            ],
+          },
+        },
+        {
+          id: "implementation",
+          title: "Implementation & Audit",
+          lessons: [
+            {
+              id: "spending",
+              title: "Releasing funds and supplementary budgets",
+              minutes: 9,
+              body: `
+<h3>Exchequer releases</h3>
+<p>Once the budget is approved, the National Treasury requests withdrawals from the Consolidated Fund. The <strong>Controller of Budget</strong> must approve each withdrawal and confirm that it is authorised by law. Accounting officers in each ministry are responsible for spending the money properly.</p>
+<h3>Supplementary budgets (Art. 223)</h3>
+<p>Circumstances change during the year. The government may spend money not yet appropriated, but it must seek Parliament's approval through a <strong>Supplementary Appropriation</strong> within <strong>two months</strong> of the first withdrawal. Except in special circumstances, the total spent this way may not exceed <strong>10%</strong> of the amount Parliament originally appropriated for that year.</p>
+<h3>Fiscal responsibility principles (PFM Act, s.15)</h3>
+<ul>
+  <li>Over the medium term, recurrent spending should not exceed total revenue.</li>
+  <li>Over the medium term, at least <strong>30%</strong> of the national budget goes to development.</li>
+  <li>Spending on public wages and benefits must stay within a limit set by regulations.</li>
+  <li>Borrowing is used <strong>only for development</strong>, not recurrent spending.</li>
+  <li>Public debt is kept at a sustainable level. Since a <strong>2023 amendment</strong>, the PFM Act anchors public debt at <strong>55% of GDP in present-value terms</strong>. This replaced the earlier fixed ceiling of KES 10 trillion.</li>
+  <li>Fiscal risks are managed prudently, and tax rates and bases are kept reasonably predictable.</li>
+</ul>`,
+            },
+            {
+              id: "audit",
+              title: "Audit and accountability",
+              minutes: 8,
+              body: `
+<h3>Auditor-General (Art. 229)</h3>
+<p>Within <strong>six months</strong> after the end of each financial year, the Auditor-General audits and reports on the accounts of national and county governments, the courts, Parliament, commissions and other public bodies. The audit asks whether public money was spent lawfully and effectively.</p>
+<h3>Types of audit opinion</h3>
+<table>
+  <thead><tr><th>Opinion</th><th>Meaning</th></tr></thead>
+  <tbody>
+    <tr><td>Unmodified (clean)</td><td>Financial statements are fairly presented</td></tr>
+    <tr><td>Qualified</td><td>Fair except for specific issues</td></tr>
+    <tr><td>Adverse</td><td>Statements are materially misstated</td></tr>
+    <tr><td>Disclaimer</td><td>Auditor could not obtain enough evidence to form an opinion</td></tr>
+  </tbody>
+</table>
+<h3>Parliamentary follow-up</h3>
+<p>Parliament (or the county assembly) must debate and act on audit reports within <strong>three months</strong> of receiving them. In the National Assembly the <strong>Public Accounts Committee (PAC)</strong> examines ministries' accounts, and the <strong>Public Investments Committee (PIC)</strong> examines state corporations. The Senate oversees county finances.</p>`,
+            },
+          ],
+          quiz: {
+            id: "q-implementation",
+            questions: [
+              {
+                q: "Within how long must Parliament's approval be sought for supplementary spending?",
+                options: ["Two weeks", "Two months", "Six months", "By the next financial year"],
+                answer: 1,
+                explain: "Article 223 requires approval within two months of the first withdrawal.",
+              },
+              {
+                q: "Borrowing may be used to finance…",
+                options: ["Salaries", "Development expenditure only", "Any expenditure", "Recurrent expenditure only"],
+                answer: 1,
+                explain: "The PFM Act restricts borrowing to development spending.",
+              },
+              {
+                q: "The Auditor-General must report within how long after the financial year ends?",
+                options: ["Three months", "Six months", "Nine months", "Twelve months"],
+                answer: 1,
+                explain: "Article 229(4) sets six months.",
+              },
+              {
+                q: "An auditor who cannot gather enough evidence issues a…",
+                options: ["Clean opinion", "Qualified opinion", "Adverse opinion", "Disclaimer of opinion"],
+                answer: 3,
+                explain: "A disclaimer means no opinion could be formed.",
+              },
+              {
+                q: "Since the 2023 amendment, the PFM Act's public debt anchor is…",
+                options: ["A fixed KES 10 trillion ceiling", "55% of GDP in present-value terms", "70% of GDP", "There is no limit"],
+                answer: 1,
+                explain: "The 2023 amendment replaced the KES 10 trillion ceiling with a debt anchor of 55% of GDP in present-value terms.",
+              },
+              {
+                q: "Which committee examines state corporations' accounts?",
+                options: ["Public Accounts Committee", "Public Investments Committee", "Budget & Appropriations Committee", "Finance Committee"],
+                answer: 1,
+                explain: "The Public Investments Committee (PIC) oversees state corporations.",
+              },
+            ],
+          },
+        },
+      ],
+    },
+    {
+      id: "county-budget",
+      title: "County Budgeting",
+      level: "Intermediate",
+      hours: 1.5,
+      summary:
+        "How Kenya's 47 counties plan and pass their budgets, from the five-year CIDP to the county Appropriation Act, and where citizens come in.",
+      outcomes: [
+        "Link the CIDP, Annual Development Plan and county budget",
+        "List the county budget deadlines in the PFM Act",
+        "Explain the role of the County Budget and Economic Forum",
+      ],
+      modules: [
+        {
+          id: "county-planning",
+          title: "Planning & Budgeting in Counties",
+          lessons: [
+            {
+              id: "cidp-adp",
+              title: "From CIDP to Annual Development Plan",
+              minutes: 8,
+              body: `
+<p>County budgeting starts with <strong>planning</strong>. The law requires that county budgets are based on approved plans.</p>
+<ul>
+  <li><strong>County Integrated Development Plan (CIDP):</strong> a <em>five-year</em> plan setting out the county's development priorities, aligned with national plans such as Kenya Vision 2030.</li>
+  <li><strong>Annual Development Plan (ADP):</strong> takes the CIDP one year at a time. It is submitted to the county assembly by <strong>1 September</strong>.</li>
+  <li><strong>Sectoral and spatial plans</strong> add detail on specific sectors and on land use.</li>
+</ul>
+<div class="callout">If a project is not in the CIDP or ADP, it should not appear in the budget. Checking this link is a powerful accountability tool for citizens.</div>`,
+            },
+            {
+              id: "county-documents",
+              title: "County budget documents and deadlines",
+              minutes: 10,
+              body: `
+<p>The county budget process mirrors the national one, run by the <strong>County Treasury</strong> and approved by the <strong>County Assembly</strong>.</p>
+<table>
+  <thead><tr><th>Deadline</th><th>Document / step</th></tr></thead>
+  <tbody>
+    <tr><td>30 August</td><td>County Treasury issues the budget circular</td></tr>
+    <tr><td>1 September</td><td>Annual Development Plan submitted to the county assembly</td></tr>
+    <tr><td>30 September</td><td>County Budget Review and Outlook Paper (CBROP) submitted to the County Executive Committee</td></tr>
+    <tr><td>28 February</td><td>County Fiscal Strategy Paper (CFSP) submitted to the county assembly</td></tr>
+    <tr><td>30 April</td><td>Budget estimates submitted to the county assembly</td></tr>
+    <tr><td>30 June</td><td>County Appropriation Bill passed</td></tr>
+  </tbody>
+</table>
+<p>The <strong>CFSP</strong> is the county counterpart of the national Budget Policy Statement. It sets the county's priorities and sector ceilings.</p>
+<h3>County fiscal rules</h3>
+<p>Over the medium term, at least <strong>30%</strong> of a county's budget must go to development. County wage spending must stay within the limit set by regulations, currently 35% of the county's total revenue.</p>`,
+            },
+            {
+              id: "cbef",
+              title: "The County Budget and Economic Forum",
+              minutes: 6,
+              body: `
+<p>Every county must establish a <strong>County Budget and Economic Forum (CBEF)</strong>. It is the formal space for consultation on county planning and budgeting.</p>
+<ul>
+  <li><strong>Chaired by</strong> the Governor.</li>
+  <li><strong>Members:</strong> the County Executive Committee and representatives of professionals, business, labour, women, persons with disabilities, the elderly and faith-based groups. These representatives must outnumber the executive members.</li>
+  <li><strong>Role:</strong> consultation on preparing county plans, the CFSP and the CBROP, and on managing county economic and financial matters.</li>
+</ul>
+<p>Counties also hold ward-level public participation forums, where residents propose and rank projects.</p>`,
+            },
+          ],
+          quiz: {
+            id: "q-county",
+            questions: [
+              {
+                q: "How long is the planning period of a CIDP?",
+                options: ["One year", "Three years", "Five years", "Ten years"],
+                answer: 2,
+                explain: "The CIDP is a five-year plan.",
+              },
+              {
+                q: "The county equivalent of the Budget Policy Statement is the…",
+                options: ["CIDP", "CBROP", "County Fiscal Strategy Paper", "Annual Development Plan"],
+                answer: 2,
+                explain: "The CFSP sets county priorities and ceilings, like the national BPS.",
+              },
+              {
+                q: "When must the CFSP reach the county assembly?",
+                options: ["1 September", "30 September", "28 February", "30 April"],
+                answer: 2,
+                explain: "The CFSP is due by 28 February.",
+              },
+              {
+                q: "Who chairs the County Budget and Economic Forum?",
+                options: ["The Speaker of the County Assembly", "The Governor", "The County Commissioner", "The Controller of Budget"],
+                answer: 1,
+                explain: "The Governor chairs the CBEF.",
+              },
+            ],
+          },
+        },
+      ],
+    },
+    {
+      id: "participation",
+      title: "Citizen Oversight & Public Participation",
+      level: "Beginner",
+      hours: 1,
+      summary:
+        "Practical skills for citizens, journalists and civil society: where to find budget documents, how to read them, and how to influence decisions.",
+      outcomes: [
+        "Identify when and where the public can take part in the budget",
+        "Read a programme-based budget",
+        "Use Controller of Budget and Auditor-General reports to track spending",
+      ],
+      modules: [
+        {
+          id: "engage",
+          title: "Engaging with the Budget",
+          lessons: [
+            {
+              id: "when-to-engage",
+              title: "Entry points for citizens",
+              minutes: 7,
+              body: `
+<p>Public participation is a constitutional requirement (Art. 10 and Art. 201(a)), not a favour. These are the main entry points:</p>
+<table>
+  <thead><tr><th>When</th><th>Opportunity</th></tr></thead>
+  <tbody>
+    <tr><td>Sep - Jan</td><td>Sector Working Group hearings; county ward forums on the ADP</td></tr>
+    <tr><td>Feb - Mar</td><td>Submit memoranda on the BPS / CFSP to the Budget Committee or county assembly</td></tr>
+    <tr><td>May - Jun</td><td>Departmental committee hearings on the estimates; Finance Bill hearings</td></tr>
+    <tr><td>All year</td><td>Monitor projects; read Controller of Budget and audit reports; petition Parliament or the county assembly</td></tr>
+  </tbody>
+</table>
+<h3>Writing an effective memorandum</h3>
+<ol>
+  <li>Name the specific document, vote or programme you are commenting on.</li>
+  <li>State the problem using evidence (figures, site visits, audit findings).</li>
+  <li>Make a concrete, costed recommendation.</li>
+  <li>Submit it before the deadline in the published notice, and keep proof of submission.</li>
+</ol>`,
+            },
+            {
+              id: "reading-budget",
+              title: "Reading a programme-based budget",
+              minutes: 9,
+              body: `
+<p>Kenyan budgets are <strong>programme-based</strong>: money is organised around what government wants to achieve, not only by type of spending.</p>
+<h3>The hierarchy</h3>
+<p><strong>Vote</strong> (a ministry or department) → <strong>Programme</strong> → <strong>Sub-programme</strong> → economic classification (wages, goods &amp; services, capital).</p>
+<h3>What to look for</h3>
+<ul>
+  <li><strong>Outputs and Key Performance Indicators (KPIs):</strong> what will be delivered, and how many.</li>
+  <li><strong>Trends:</strong> compare the allocation with last year's budget and with actual spending.</li>
+  <li><strong>Absorption:</strong> what share of the allocation was actually spent. Controller of Budget reports show this.</li>
+  <li><strong>Development share:</strong> is the 30% minimum met?</li>
+</ul>
+<h3>Worked example</h3>
+<p>A county allocates KES 200 million to a "Water Supply" programme and spends KES 80 million by year end. Absorption is 80 ÷ 200 = <strong>40%</strong>. Low absorption is a signal to ask why: delayed releases, stalled procurement, or poor planning?</p>`,
+            },
+            {
+              id: "tracking",
+              title: "Tracking spending with official reports",
+              minutes: 6,
+              body: `
+<p>You do not need insider access to follow the money. These sources are public:</p>
+<ul>
+  <li><strong>National Treasury:</strong> BROP, BPS, budget estimates, budget statement, quarterly economic and budgetary reviews.</li>
+  <li><strong>Controller of Budget:</strong> budget implementation review reports (national and county), published every four months and annually.</li>
+  <li><strong>Office of the Auditor-General:</strong> annual audit reports for every ministry, county and state corporation.</li>
+  <li><strong>Parliament:</strong> Hansard, committee reports, and the Parliamentary Budget Office's analyses.</li>
+  <li><strong>County websites:</strong> CIDP, ADP, CBROP, CFSP and budgets. Counties are required to publish them.</li>
+</ul>
+<div class="callout">Tip: line up three documents for the same programme. The <em>budget</em> shows what was promised, the <em>Controller of Budget report</em> shows what was spent, and the <em>audit report</em> shows whether it was spent properly.</div>`,
+            },
+          ],
+          quiz: {
+            id: "q-engage",
+            questions: [
+              {
+                q: "Which constitutional Articles anchor public participation in the budget?",
+                options: ["Articles 10 and 201", "Articles 1 and 2", "Articles 129 and 130", "Articles 260 and 261"],
+                answer: 0,
+                explain: "Article 10 (national values) and Article 201(a) (openness and participation).",
+              },
+              {
+                q: "A programme had KES 50m allocated and KES 45m spent. What is the absorption rate?",
+                options: ["45%", "50%", "90%", "111%"],
+                answer: 2,
+                explain: "45 ÷ 50 = 90%.",
+              },
+              {
+                q: "Which institution publishes budget implementation review reports?",
+                options: ["Kenya Revenue Authority", "Controller of Budget", "Central Bank of Kenya", "CRA"],
+                answer: 1,
+                explain: "The Controller of Budget publishes implementation reviews.",
+              },
+              {
+                q: "In a programme-based budget, a 'Vote' usually refers to…",
+                options: ["A citizen's ballot", "A ministry or department's allocation", "A tax measure", "A supplementary budget"],
+                answer: 1,
+                explain: "A Vote is the allocation to a ministry, department or agency.",
+              },
+            ],
+          },
+        },
+      ],
+    },
+  ];
+
+  // Statutory budget calendar (month index 0 = January). Ordered by the financial year.
+  const CALENDAR = [
+    { level: "national", date: "30 Aug", month: 7, title: "Treasury budget circular issued", detail: "Guidelines and calendar sent to all ministries, departments and agencies." },
+    { level: "county", date: "30 Aug", month: 7, title: "County budget circular issued", detail: "County Treasury guidelines to county departments." },
+    { level: "county", date: "1 Sep", month: 8, title: "Annual Development Plan to county assembly", detail: "Yearly slice of the five-year CIDP." },
+    { level: "national", date: "30 Sep", month: 8, title: "Budget Review and Outlook Paper (BROP)", detail: "Reviews the previous year and sets provisional ceilings." },
+    { level: "county", date: "30 Sep", month: 8, title: "County BROP (CBROP)", detail: "Submitted to the County Executive Committee." },
+    { level: "national", date: "Oct - Jan", month: 9, title: "Sector Working Groups & public hearings", detail: "Sectors prioritise programmes and prepare MTEF reports." },
+    { level: "national", date: "15 Feb", month: 1, title: "Budget Policy Statement (BPS)", detail: "Final ceilings. The Division of Revenue and County Allocation of Revenue Bills are introduced around this time." },
+    { level: "county", date: "28 Feb", month: 1, title: "County Fiscal Strategy Paper (CFSP)", detail: "Submitted to the county assembly." },
+    { level: "national", date: "30 Apr", month: 3, title: "Budget estimates to the National Assembly", detail: "Article 221: at least two months before the financial year ends." },
+    { level: "county", date: "30 Apr", month: 3, title: "County budget estimates to the county assembly", detail: "Programme-based estimates for the county." },
+    { level: "national", date: "May - Jun", month: 4, title: "Finance Bill considered", detail: "Tax measures are usually tabled and passed alongside the budget. Election years differ: for FY 2027/28 the Treasury plans to table the Bill on 29 Jan 2027 and pass it by 31 Mar 2027." },
+    { level: "national", date: "June", month: 5, title: "Budget Statement (Budget Day)", detail: "Cabinet Secretary presents priorities and revenue measures." },
+    { level: "national", date: "30 Jun", month: 5, title: "Appropriation Bill passed", detail: "Legal authority to spend from 1 July." },
+    { level: "county", date: "30 Jun", month: 5, title: "County Appropriation Bill passed", detail: "County Assembly approves the county budget." },
+    { level: "both", date: "1 Jul", month: 6, title: "New financial year begins", detail: "Implementation starts. Controller of Budget approves withdrawals." },
+    { level: "both", date: "By 31 Dec", month: 11, title: "Auditor-General reports on the previous year", detail: "Within six months after the financial year ends (Art. 229)." },
+  ];
+
+  const GLOSSARY = [
+    ["Absorption rate", "Share of an allocated budget actually spent in a period."],
+    ["Appropriation Act", "Law authorising government to withdraw and spend money from public funds for the financial year."],
+    ["Auditor-General", "Independent office (Art. 229) that audits all public accounts and reports to Parliament."],
+    ["BAC", "Budget and Appropriations Committee of the National Assembly, which co-ordinates scrutiny of the budget."],
+    ["BPS", "Budget Policy Statement: the national policy framework and final sector ceilings, due by 15 February."],
+    ["BROP", "Budget Review and Outlook Paper: reviews past performance and sets provisional ceilings, due by 30 September."],
+    ["CBEF", "County Budget and Economic Forum: county consultative body chaired by the Governor."],
+    ["CBROP", "County Budget Review and Outlook Paper."],
+    ["CFSP", "County Fiscal Strategy Paper: county counterpart of the BPS, due by 28 February."],
+    ["CIDP", "County Integrated Development Plan: the five-year county development plan."],
+    ["Consolidated Fund", "The main national government fund (Art. 206), into which most national revenue is paid."],
+    ["Contingencies Fund", "Fund for urgent, unforeseen expenditure (Art. 208)."],
+    ["Controller of Budget", "Independent office (Art. 228) that authorises withdrawals from public funds and reports on budget implementation."],
+    ["CRA", "Commission on Revenue Allocation: recommends how revenue is shared (Arts. 215-216)."],
+    ["Debt anchor", "The PFM Act's limit on public debt: 55% of GDP in present-value terms since a 2023 amendment."],
+    ["Development expenditure", "Spending that creates long-term assets such as roads, schools and hospitals."],
+    ["Division of Revenue Bill", "Annual Bill splitting revenue between national and county governments (Art. 218)."],
+    ["Equalisation Fund", "0.5% of national revenue for basic services in marginalised areas (Art. 204)."],
+    ["Equitable share", "Revenue allocated to counties under the Constitution: at least 15% of audited national revenue."],
+    ["Exchequer release", "Transfer of funds from the Consolidated Fund to a ministry or county, approved by the Controller of Budget."],
+    ["Finance Bill", "Annual Bill amending tax laws to raise revenue for the budget."],
+    ["Fiscal deficit", "The gap between total expenditure and total revenue, financed by borrowing."],
+    ["Financial year", "1 July to 30 June."],
+    ["MTEF", "Medium-Term Expenditure Framework: three-year rolling budget framework."],
+    ["PBO", "Parliamentary Budget Office: provides independent budget analysis to Parliament."],
+    ["PFM Act", "Public Finance Management Act 2012: the main law on public finance procedures."],
+    ["Programme-based budget", "Budget organised by programmes with objectives, outputs and performance indicators."],
+    ["Recurrent expenditure", "Day-to-day operating costs such as wages, utilities and maintenance."],
+    ["Supplementary budget", "Mid-year changes to the approved budget, requiring approval under Art. 223."],
+    ["Vote", "The budget allocation to a ministry, department or agency."],
+    ["Vote on account", "Interim authority to spend up to half of the estimates if the Appropriation Act is delayed (Art. 222)."],
+  ];
+
+  const PASS_MARK = 70;
+
+  const data = { SITE, COURSES, CALENDAR, GLOSSARY, PASS_MARK };
+  if (typeof module !== "undefined" && module.exports) module.exports = data;
+  else root.LMS_DATA = data;
+})(typeof window !== "undefined" ? window : globalThis);
+
+</script>
+    <script>
+/*
+ * Learner progress: pure helpers (testable in Node) plus a small localStorage wrapper.
+ */
+(function (root) {
+  const STORAGE_KEY = "kbp-lms-v1";
+  const MAX_ACTIVITY = 30;
+
+  function emptyState() {
+    return { learner: { name: "" }, lessons: {}, quizzes: {}, activity: [] };
+  }
+
+  function lessonKey(courseId, moduleId, lessonId) {
+    return `${courseId}/${moduleId}/${lessonId}`;
+  }
+
+  function quizKey(courseId, moduleId) {
+    return `${courseId}/${moduleId}`;
+  }
+
+  // Ensures loaded/imported data has the expected shape.
+  function normalize(raw) {
+    const s = emptyState();
+    if (!raw || typeof raw !== "object") return s;
+    if (raw.learner && typeof raw.learner.name === "string") s.learner.name = raw.learner.name.slice(0, 80);
+    if (raw.lessons && typeof raw.lessons === "object") s.lessons = { ...raw.lessons };
+    if (raw.quizzes && typeof raw.quizzes === "object") s.quizzes = { ...raw.quizzes };
+    if (Array.isArray(raw.activity)) s.activity = raw.activity.slice(0, MAX_ACTIVITY);
+    return s;
+  }
+
+  function scoreQuiz(quiz, answers, passMark) {
+    const total = quiz.questions.length;
+    let correct = 0;
+    quiz.questions.forEach((q, i) => {
+      if (answers[i] === q.answer) correct++;
+    });
+    const pct = total ? Math.round((correct / total) * 100) : 0;
+    return { correct, total, pct, passed: pct >= passMark };
+  }
+
+  function logActivity(state, text, now) {
+    state.activity.unshift({ text, at: now });
+    state.activity.length = Math.min(state.activity.length, MAX_ACTIVITY);
+  }
+
+  function completeLesson(state, courseId, moduleId, lessonId, title, now = new Date().toISOString()) {
+    const key = lessonKey(courseId, moduleId, lessonId);
+    if (state.lessons[key]) return state;
+    state.lessons[key] = now;
+    logActivity(state, `Completed lesson "${title}"`, now);
+    return state;
+  }
+
+  function recordQuiz(state, courseId, moduleId, title, result, now = new Date().toISOString()) {
+    const key = quizKey(courseId, moduleId);
+    const prev = state.quizzes[key] || { best: 0, attempts: 0, passed: false };
+    state.quizzes[key] = {
+      best: Math.max(prev.best, result.pct),
+      last: result.pct,
+      attempts: prev.attempts + 1,
+      passed: prev.passed || result.passed,
+      at: now,
+    };
+    logActivity(state, `Scored ${result.pct}% on "${title}" quiz${result.passed ? " (passed)" : ""}`, now);
+    return state;
+  }
+
+  // Progress counts every lesson plus every module quiz (passed) as one step.
+  function courseProgress(course, state) {
+    let total = 0;
+    let done = 0;
+    for (const m of course.modules) {
+      for (const l of m.lessons) {
+        total++;
+        if (state.lessons[lessonKey(course.id, m.id, l.id)]) done++;
+      }
+      if (m.quiz) {
+        total++;
+        const q = state.quizzes[quizKey(course.id, m.id)];
+        if (q && q.passed) done++;
+      }
+    }
+    return { done, total, pct: total ? Math.round((done / total) * 100) : 0, complete: total > 0 && done === total };
+  }
+
+  // First incomplete step in a course, or null when finished.
+  function nextStep(course, state) {
+    for (const m of course.modules) {
+      for (const l of m.lessons) {
+        if (!state.lessons[lessonKey(course.id, m.id, l.id)]) return { type: "lesson", module: m, lesson: l };
+      }
+      const q = m.quiz && state.quizzes[quizKey(course.id, m.id)];
+      if (m.quiz && !(q && q.passed)) return { type: "quiz", module: m };
+    }
+    return null;
+  }
+
+  function completionDate(course, state) {
+    let latest = "";
+    for (const m of course.modules) {
+      for (const l of m.lessons) {
+        const t = state.lessons[lessonKey(course.id, m.id, l.id)];
+        if (t && t > latest) latest = t;
+      }
+      const q = state.quizzes[quizKey(course.id, m.id)];
+      if (q && q.at && q.at > latest) latest = q.at;
+    }
+    return latest;
+  }
+
+  function load(storage) {
+    try {
+      const raw = storage && storage.getItem(STORAGE_KEY);
+      return normalize(raw ? JSON.parse(raw) : null);
+    } catch (e) {
+      return emptyState();
+    }
+  }
+
+  function save(storage, state) {
+    try {
+      storage && storage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) {
+      /* storage unavailable (private mode); progress lives for this session only */
+    }
+  }
+
+  const api = {
+    STORAGE_KEY,
+    emptyState,
+    normalize,
+    lessonKey,
+    quizKey,
+    scoreQuiz,
+    completeLesson,
+    recordQuiz,
+    courseProgress,
+    nextStep,
+    completionDate,
+    load,
+    save,
+  };
+  if (typeof module !== "undefined" && module.exports) module.exports = api;
+  else root.LMS_STORE = api;
+})(typeof window !== "undefined" ? window : globalThis);
+
+</script>
+    <script>
+/*
+ * Talks to the optional server. When the page is opened without the server
+ * (from a file or static hosting) detect() reports "local" mode and the app
+ * keeps progress in the browser instead.
+ */
+(function () {
+  class ApiError extends Error {
+    constructor(status, message) {
+      super(message);
+      this.status = status;
+    }
+  }
+
+  async function request(method, path, body) {
+    const opts = { method, credentials: "same-origin", headers: {} };
+    if (body !== undefined) {
+      opts.headers["Content-Type"] = "application/json";
+      opts.body = JSON.stringify(body);
+    }
+    let res;
+    try {
+      res = await fetch(path, opts);
+    } catch (e) {
+      throw new ApiError(0, "Can't reach the server. Check your connection.");
+    }
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new ApiError(res.status, data.error || `Request failed (${res.status})`);
+    return data;
+  }
+
+  async function detect() {
+    if (location.protocol === "file:") return { mode: "local" };
+    try {
+      const res = await fetch("api/session", { credentials: "same-origin" });
+      const data = res.ok && (res.headers.get("content-type") || "").includes("application/json") ? await res.json() : null;
+      if (data && "user" in data) return { mode: "server", session: data.user ? data : null };
+    } catch (e) {
+      /* no server */
+    }
+    return { mode: "local" };
+  }
+
+  window.LMS_API = {
+    ApiError,
+    detect,
+    register: (name, email, password) => request("POST", "api/register", { name, email, password }),
+    login: (email, password) => request("POST", "api/login", { email, password }),
+    logout: () => request("POST", "api/logout", {}),
+    updateMe: (name) => request("PATCH", "api/me", { name }),
+    completeLesson: (courseId, moduleId, lessonId) => request("POST", "api/progress/lesson", { courseId, moduleId, lessonId }),
+    submitQuiz: (courseId, moduleId, answers) => request("POST", "api/progress/quiz", { courseId, moduleId, answers }),
+    resetProgress: () => request("DELETE", "api/progress"),
+    learners: () => request("GET", "api/admin/learners"),
+    learner: (id) => request("GET", `api/admin/learners/${encodeURIComponent(id)}`),
+    setRole: (id, role) => request("PATCH", `api/admin/learners/${encodeURIComponent(id)}`, { role }),
+    verify: (code) => request("GET", `api/verify/${encodeURIComponent(code)}`),
+  };
+})();
+
+</script>
+    <script>
+/*
+ * Single-page app: hash router + views. Depends on LMS_DATA, LMS_STORE and LMS_API.
+ *
+ * Two modes:
+ *  - server: accounts, server-graded quizzes, instructor dashboard, verifiable certificates
+ *  - local:  no server found (opened from a file or static hosting); progress stays in this browser
+ */
+(function () {
+  const { SITE, COURSES, CALENDAR, GLOSSARY, PASS_MARK } = window.LMS_DATA;
+  const S = window.LMS_STORE;
+  const API = window.LMS_API;
+  const storage = (() => {
+    try {
+      return window.localStorage;
+    } catch (e) {
+      return null;
+    }
+  })();
+
+  const ctx = { mode: "local", user: null, certificates: {} };
+  let state = S.emptyState();
+  const view = document.getElementById("view");
+
+  const isServer = () => ctx.mode === "server";
+  const isInstructor = () => isServer() && ctx.user && ctx.user.role === "instructor";
+  const persist = () => !isServer() && S.save(storage, state);
+
+  const esc = (s) =>
+    String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+
+  const findCourse = (id) => COURSES.find((c) => c.id === id);
+  const findModule = (c, id) => c && c.modules.find((m) => m.id === id);
+
+  function fmtDate(iso) {
+    if (!iso) return "";
+    return new Date(iso).toLocaleDateString("en-KE", { day: "numeric", month: "long", year: "numeric" });
+  }
+
+  function progressBar(pct, label) {
+    return `<div class="progress" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="${esc(label || "Progress")}"><span style="width:${pct}%"></span></div>`;
+  }
+
+  function toast(message, kind = "error") {
+    const el = document.createElement("div");
+    el.className = `toast toast-${kind}`;
+    el.setAttribute("role", kind === "error" ? "alert" : "status");
+    el.textContent = message;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 4500);
+  }
+
+  // Runs an async action with the button disabled; a 401 sends the user to sign in.
+  async function busy(button, fn) {
+    if (button) button.disabled = true;
+    try {
+      return await fn();
+    } catch (err) {
+      if (err.status === 401 && isServer()) {
+        ctx.user = null;
+        location.hash = "#/login";
+      }
+      toast(err.message || "Something went wrong");
+      err.handled = true; // already shown to the user; see the unhandledrejection listener in init()
+      throw err;
+    } finally {
+      if (button) button.disabled = false;
+    }
+  }
+
+  function applySession(session) {
+    ctx.user = session ? session.user : null;
+    ctx.certificates = (session && session.certificates) || {};
+    state = session ? S.normalize(session.state) : S.emptyState();
+    if (session) state.learner.name = session.user.name;
+  }
+
+  // ---------- Data actions (local or server) ----------
+
+  const backend = {
+    async completeLesson(cid, mid, lid, title) {
+      if (!isServer()) {
+        S.completeLesson(state, cid, mid, lid, title);
+        return persist();
+      }
+      const d = await API.completeLesson(cid, mid, lid);
+      state = S.normalize(d.state);
+      ctx.certificates = d.certificates;
+    },
+    async submitQuiz(cid, mid, answers) {
+      const mod = findModule(findCourse(cid), mid);
+      if (!isServer()) {
+        const result = S.scoreQuiz(mod.quiz, answers, PASS_MARK);
+        S.recordQuiz(state, cid, mid, mod.title, result);
+        persist();
+        return result;
+      }
+      const d = await API.submitQuiz(cid, mid, answers);
+      state = S.normalize(d.state);
+      ctx.certificates = d.certificates;
+      return d.result;
+    },
+    async setName(name) {
+      if (!isServer()) {
+        state.learner.name = name;
+        return persist();
+      }
+      const d = await API.updateMe(name);
+      ctx.user = d.user;
+      state.learner.name = d.user.name;
+    },
+    async reset() {
+      if (!isServer()) {
+        state = S.emptyState();
+        return persist();
+      }
+      const d = await API.resetProgress();
+      state = S.normalize(d.state);
+      ctx.certificates = d.certificates;
+    },
+  };
+
+  function stepHref(course, step) {
+    if (!step) return `#/course/${course.id}`;
+    return step.type === "lesson"
+      ? `#/lesson/${course.id}/${step.module.id}/${step.lesson.id}`
+      : `#/quiz/${course.id}/${step.module.id}`;
+  }
+
+  // Flat ordered list of lessons and quizzes, used for prev/next navigation.
+  function steps(course) {
+    const out = [];
+    for (const m of course.modules) {
+      for (const l of m.lessons) out.push({ href: `#/lesson/${course.id}/${m.id}/${l.id}`, title: l.title });
+      if (m.quiz) out.push({ href: `#/quiz/${course.id}/${m.id}`, title: `${m.title} quiz` });
+    }
+    return out;
+  }
+
+  function courseCard(c) {
+    const p = S.courseProgress(c, state);
+    const lessons = c.modules.reduce((n, m) => n + m.lessons.length, 0);
+    const cta = p.complete ? "Review" : p.done ? "Continue" : "Start";
+    return `
+<article class="card course-card">
+  <div class="card-top">
+    <span class="badge badge-${c.level.toLowerCase()}">${c.level}</span>
+    ${p.complete ? '<span class="badge badge-done">✓ Completed</span>' : ""}
+  </div>
+  <h3><a href="#/course/${c.id}">${esc(c.title)}</a></h3>
+  <p class="muted">${esc(c.summary)}</p>
+  <p class="meta">${c.modules.length} module${c.modules.length > 1 ? "s" : ""} · ${lessons} lessons · ~${c.hours} h</p>
+  ${progressBar(p.pct, `${c.title} progress`)}
+  <div class="card-foot"><span class="muted small">${p.pct}% complete</span><a class="btn btn-sm" href="${p.complete ? `#/course/${c.id}` : stepHref(c, S.nextStep(c, state))}">${cta}</a></div>
+</article>`;
+  }
+
+  // ---------- Learner views ----------
+
+  function dashboard() {
+    const name = state.learner.name;
+    const totals = COURSES.map((c) => S.courseProgress(c, state));
+    const completed = totals.filter((t) => t.complete).length;
+    const lessonsDone = Object.keys(state.lessons).length;
+    const quizVals = Object.values(state.quizzes);
+    const avg = quizVals.length ? Math.round(quizVals.reduce((a, q) => a + q.best, 0) / quizVals.length) : null;
+    const inProgress = COURSES.filter((c, i) => totals[i].done > 0 && !totals[i].complete);
+    const suggested = inProgress.length ? inProgress : COURSES.filter((c, i) => !totals[i].complete).slice(0, 2);
+
+    const welcome = name
+      ? `<h1>Karibu, ${esc(name)} 👋</h1><p class="lead">Pick up where you left off, or start something new.</p>`
+      : `<h1>Karibu! Learn how Kenya's budget works</h1>
+         <p class="lead">Short courses on how Kenya's national and county budgets are made, passed, spent and audited.</p>
+         <form class="inline-form" id="name-form">
+           <label for="learner-name">What should we call you?</label>
+           <div class="row"><input id="learner-name" maxlength="80" placeholder="Your name" required /><button class="btn">Get started</button></div>
+         </form>`;
+
+    view.innerHTML = `
+<section class="hero">${welcome}</section>
+<section class="stats">
+  <div class="stat"><span class="stat-num">${completed}/${COURSES.length}</span><span class="stat-label">Courses completed</span></div>
+  <div class="stat"><span class="stat-num">${lessonsDone}</span><span class="stat-label">Lessons done</span></div>
+  <div class="stat"><span class="stat-num">${avg === null ? "-" : avg + "%"}</span><span class="stat-label">Avg. best quiz score</span></div>
+  <div class="stat"><span class="stat-num">${completed}</span><span class="stat-label">Certificates earned</span></div>
+</section>
+<div class="two-col">
+  <section>
+    <h2>${inProgress.length ? "Continue learning" : "Recommended for you"}</h2>
+    <div class="grid">${suggested.map(courseCard).join("") || '<p class="muted">You have completed every course. Hongera! 🎉</p>'}</div>
+  </section>
+  <aside>
+    <h2>Recent activity</h2>
+    ${
+      state.activity.length
+        ? `<ul class="activity">${state.activity
+            .slice(0, 8)
+            .map((a) => `<li><span>${esc(a.text)}</span><time class="muted small">${fmtDate(a.at)}</time></li>`)
+            .join("")}</ul>`
+        : '<p class="muted">No activity yet. Finish a lesson and it will appear here.</p>'
+    }
+    <div class="card tip"><strong>Quick tip</strong><p>Kenya's financial year runs <strong>1 July to 30 June</strong>. See every deadline on the <a href="#/calendar">Budget Calendar</a>.</p></div>
+  </aside>
+</div>`;
+
+    const form = document.getElementById("name-form");
+    if (form)
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        await busy(form.querySelector("button"), () =>
+          backend.setName(document.getElementById("learner-name").value.trim().slice(0, 80))
+        );
+        render();
+      });
+  }
+
+  function catalog() {
+    view.innerHTML = `
+<h1>Course catalogue</h1>
+<p class="lead">${COURSES.length} courses on the Kenyan budget process, from first principles to county-level oversight.</p>
+<div class="filters">
+  <input type="search" id="course-search" placeholder="Search courses…" aria-label="Search courses" />
+  <div class="chips" role="group" aria-label="Filter by level">
+    ${["All", "Beginner", "Intermediate"].map((l, i) => `<button class="chip${i === 0 ? " active" : ""}" data-level="${l}">${l}</button>`).join("")}
+  </div>
+</div>
+<div class="grid" id="course-grid"></div>`;
+
+    let level = "All";
+    const grid = document.getElementById("course-grid");
+    const search = document.getElementById("course-search");
+    const draw = () => {
+      const q = search.value.trim().toLowerCase();
+      const list = COURSES.filter(
+        (c) => (level === "All" || c.level === level) && (!q || (c.title + " " + c.summary).toLowerCase().includes(q))
+      );
+      grid.innerHTML = list.map(courseCard).join("") || '<p class="muted">No courses match your search.</p>';
+    };
+    search.addEventListener("input", draw);
+    view.querySelectorAll(".chip").forEach((b) =>
+      b.addEventListener("click", () => {
+        level = b.dataset.level;
+        view.querySelectorAll(".chip").forEach((x) => x.classList.toggle("active", x === b));
+        draw();
+      })
+    );
+    draw();
+  }
+
+  function courseView(cid) {
+    const c = findCourse(cid);
+    if (!c) return notFound();
+    const p = S.courseProgress(c, state);
+    const next = S.nextStep(c, state);
+
+    const modules = c.modules
+      .map((m, mi) => {
+        const q = state.quizzes[S.quizKey(c.id, m.id)];
+        const lessons = m.lessons
+          .map((l) => {
+            const done = !!state.lessons[S.lessonKey(c.id, m.id, l.id)];
+            return `<li class="${done ? "done" : ""}"><a href="#/lesson/${c.id}/${m.id}/${l.id}"><span class="tick" aria-hidden="true">${done ? "✓" : "○"}</span>${esc(l.title)}</a><span class="muted small">${l.minutes} min</span></li>`;
+          })
+          .join("");
+        const quiz = m.quiz
+          ? `<li class="${q && q.passed ? "done" : ""} quiz-item"><a href="#/quiz/${c.id}/${m.id}"><span class="tick" aria-hidden="true">${q && q.passed ? "✓" : "?"}</span>Module quiz (${m.quiz.questions.length} questions)</a><span class="muted small">${q ? `Best ${q.best}%` : `Pass ${PASS_MARK}%`}</span></li>`
+          : "";
+        return `<section class="module"><h3><span class="muted">Module ${mi + 1}</span> ${esc(m.title)}</h3><ul class="steps">${lessons}${quiz}</ul></section>`;
+      })
+      .join("");
+
+    view.innerHTML = `
+<nav class="crumbs"><a href="#/courses">Courses</a> / <span>${esc(c.title)}</span></nav>
+<header class="course-head">
+  <div>
+    <span class="badge badge-${c.level.toLowerCase()}">${c.level}</span>
+    <h1>${esc(c.title)}</h1>
+    <p class="lead">${esc(c.summary)}</p>
+  </div>
+  <div class="card progress-card">
+    <strong>${p.pct}% complete</strong>
+    ${progressBar(p.pct, "Course progress")}
+    <p class="muted small">${p.done} of ${p.total} steps</p>
+    ${
+      p.complete
+        ? `<a class="btn" href="#/certificate/${c.id}">🎓 View certificate</a>`
+        : `<a class="btn" href="${stepHref(c, next)}">${p.done ? "Continue" : "Start course"}</a>`
+    }
+  </div>
+</header>
+<div class="two-col">
+  <section>${modules}</section>
+  <aside class="card"><h3>What you'll learn</h3><ul class="outcomes">${c.outcomes.map((o) => `<li>${esc(o)}</li>`).join("")}</ul></aside>
+</div>`;
+  }
+
+  function lessonView(cid, mid, lid) {
+    const c = findCourse(cid);
+    const m = findModule(c, mid);
+    const l = m && m.lessons.find((x) => x.id === lid);
+    if (!l) return notFound();
+    const key = S.lessonKey(cid, mid, lid);
+    const all = steps(c);
+    const idx = all.findIndex((s) => s.href === `#/lesson/${cid}/${mid}/${lid}`);
+    const prev = all[idx - 1];
+    const next = all[idx + 1];
+    const done = !!state.lessons[key];
+
+    view.innerHTML = `
+<nav class="crumbs"><a href="#/courses">Courses</a> / <a href="#/course/${c.id}">${esc(c.title)}</a> / <span>${esc(m.title)}</span></nav>
+<article class="lesson">
+  <p class="muted small">Lesson ${idx + 1} of ${all.length} · ${l.minutes} min read</p>
+  <h1>${esc(l.title)}</h1>
+  <div class="prose">${l.body}</div>
+  <div class="lesson-actions">
+    ${prev ? `<a class="btn btn-ghost" href="${prev.href}">← ${esc(prev.title)}</a>` : "<span></span>"}
+    <button class="btn" id="complete-btn">${done ? "✓ Completed, continue" : "Mark complete & continue"}</button>
+  </div>
+</article>`;
+
+    const btn = document.getElementById("complete-btn");
+    btn.addEventListener("click", async () => {
+      if (!done) await busy(btn, () => backend.completeLesson(cid, mid, lid, l.title));
+      location.hash = next ? next.href : `#/course/${cid}`;
+    });
+  }
+
+  function quizView(cid, mid) {
+    const c = findCourse(cid);
+    const m = findModule(c, mid);
+    if (!m || !m.quiz) return notFound();
+    const quiz = m.quiz;
+    const record = state.quizzes[S.quizKey(cid, mid)];
+
+    view.innerHTML = `
+<nav class="crumbs"><a href="#/courses">Courses</a> / <a href="#/course/${c.id}">${esc(c.title)}</a> / <span>${esc(m.title)} quiz</span></nav>
+<h1>${esc(m.title)}: quiz</h1>
+<p class="lead">${quiz.questions.length} questions. You need ${PASS_MARK}% to pass.${record ? ` Your best so far: <strong>${record.best}%</strong> (${record.attempts} attempt${record.attempts > 1 ? "s" : ""}).` : ""}</p>
+<form id="quiz-form" class="quiz">
+  ${quiz.questions
+    .map(
+      (q, i) => `
+  <fieldset class="question" data-q="${i}">
+    <legend><span class="qnum">${i + 1}</span>${esc(q.q)}</legend>
+    ${q.options
+      .map(
+        (o, j) => `<label class="option"><input type="radio" name="q${i}" value="${j}" required /> <span>${esc(o)}</span></label>`
+      )
+      .join("")}
+    <p class="explain" hidden></p>
+  </fieldset>`
+    )
+    .join("")}
+  <div class="quiz-actions"><button class="btn">Submit answers</button></div>
+</form>
+<div id="quiz-result"></div>`;
+
+    const form = document.getElementById("quiz-form");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const answers = quiz.questions.map((_, i) => {
+        const sel = form.querySelector(`input[name="q${i}"]:checked`);
+        return sel ? Number(sel.value) : -1;
+      });
+      const result = await busy(form.querySelector(".quiz-actions .btn"), () => backend.submitQuiz(cid, mid, answers));
+
+      form.querySelectorAll(".question").forEach((fs, i) => {
+        const q = quiz.questions[i];
+        fs.classList.add(answers[i] === q.answer ? "correct" : "wrong");
+        fs.querySelectorAll("label.option").forEach((lab, j) => {
+          if (j === q.answer) lab.classList.add("is-answer");
+        });
+        const ex = fs.querySelector(".explain");
+        ex.hidden = false;
+        ex.textContent = (answers[i] === q.answer ? "✓ Correct. " : "✗ Not quite. ") + q.explain;
+        fs.querySelectorAll("input").forEach((inp) => (inp.disabled = true));
+      });
+      form.querySelector(".quiz-actions").remove();
+
+      const all = steps(c);
+      const next = all[all.findIndex((s) => s.href === `#/quiz/${cid}/${mid}`) + 1];
+      const p = S.courseProgress(c, state);
+      const res = document.getElementById("quiz-result");
+      res.innerHTML = `
+<div class="card result ${result.passed ? "pass" : "fail"}">
+  <h2>${result.passed ? `🎉 Passed with ${result.pct}%` : `You scored ${result.pct}%. Keep going!`}</h2>
+  <p>You answered ${result.correct} of ${result.total} correctly. ${result.passed ? "" : `You need ${PASS_MARK}% to pass. Review the explanations above and try again.`}</p>
+  <div class="row">
+    <button class="btn btn-ghost" id="retry">Retake quiz</button>
+    ${
+      p.complete
+        ? `<a class="btn" href="#/certificate/${cid}">🎓 Get your certificate</a>`
+        : result.passed && next
+          ? `<a class="btn" href="${next.href}">Next: ${esc(next.title)} →</a>`
+          : `<a class="btn" href="#/course/${cid}">Back to course</a>`
+    }
+  </div>
+</div>`;
+      document.getElementById("retry").addEventListener("click", () => quizView(cid, mid));
+      res.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  }
+
+  function calendarView() {
+    view.innerHTML = `
+<h1>Budget calendar</h1>
+<p class="lead">Statutory deadlines under the Constitution and the PFM Act 2012, ordered by the financial year (July to June). Treasury publishes the exact dates each year in its budget circular, and election years can bring dates forward. Content last reviewed ${esc(SITE.contentReviewed)}.</p>
+<div class="chips" role="group" aria-label="Filter by level of government">
+  ${[
+    ["all", "All"],
+    ["national", "National"],
+    ["county", "County"],
+  ]
+    .map(([v, l], i) => `<button class="chip${i === 0 ? " active" : ""}" data-level="${v}">${l}</button>`)
+    .join("")}
+</div>
+<ol class="timeline" id="timeline"></ol>`;
+
+    const tl = document.getElementById("timeline");
+    const draw = (lvl) => {
+      tl.innerHTML = CALENDAR.filter((e) => lvl === "all" || e.level === lvl || e.level === "both")
+        .map(
+          (e) => `
+<li class="tl-item tl-${e.level}">
+  <div class="tl-date">${esc(e.date)}</div>
+  <div class="tl-body"><span class="badge badge-${e.level}">${e.level === "both" ? "National & County" : e.level[0].toUpperCase() + e.level.slice(1)}</span><h3>${esc(e.title)}</h3><p class="muted">${esc(e.detail)}</p></div>
+</li>`
+        )
+        .join("");
+    };
+    view.querySelectorAll(".chip").forEach((b) =>
+      b.addEventListener("click", () => {
+        view.querySelectorAll(".chip").forEach((x) => x.classList.toggle("active", x === b));
+        draw(b.dataset.level);
+      })
+    );
+    draw("all");
+  }
+
+  function glossaryView() {
+    view.innerHTML = `
+<h1>Glossary</h1>
+<p class="lead">${GLOSSARY.length} key terms and acronyms used in Kenyan public finance.</p>
+<input type="search" id="gloss-search" placeholder="Search terms…" aria-label="Search glossary" />
+<dl class="glossary" id="gloss"></dl>`;
+    const dl = document.getElementById("gloss");
+    const search = document.getElementById("gloss-search");
+    const draw = () => {
+      const q = search.value.trim().toLowerCase();
+      const items = GLOSSARY.filter(([t, d]) => !q || t.toLowerCase().includes(q) || d.toLowerCase().includes(q));
+      dl.innerHTML =
+        items.map(([t, d]) => `<div class="gloss-item"><dt>${esc(t)}</dt><dd>${esc(d)}</dd></div>`).join("") ||
+        '<p class="muted">No matching terms.</p>';
+    };
+    search.addEventListener("input", draw);
+    draw();
+  }
+
+  function certificateHtml({ name, courseTitle, date, modules, hours, code }) {
+    const verifyUrl = code ? `${location.origin}${location.pathname}#/verify/${code}` : "";
+    return `
+<div class="certificate">
+  <div class="flag-bar" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+  <p class="cert-kicker">Certificate of Completion</p>
+  <p>This certifies that</p>
+  <h2 class="cert-name">${esc(name)}</h2>
+  <p>has successfully completed the course</p>
+  <h3 class="cert-course">${esc(courseTitle)}</h3>
+  <p class="muted">Completed on ${fmtDate(date)}${modules ? ` · ${modules} module${modules > 1 ? "s" : ""} · ~${hours} hours` : ""}</p>
+  <p class="cert-org">${esc(SITE.name)} · ${esc(SITE.tagline)}</p>
+  ${code ? `<p class="cert-code">Certificate ID <strong>${esc(code)}</strong><br /><span>Verify at ${esc(verifyUrl)}</span></p>` : ""}
+</div>`;
+  }
+
+  function certificateView(cid) {
+    const c = findCourse(cid);
+    if (!c) return notFound();
+    const p = S.courseProgress(c, state);
+    if (!p.complete) {
+      view.innerHTML = `<h1>Certificate locked</h1><p class="lead">Finish every lesson and pass every module quiz in <strong>${esc(c.title)}</strong> to unlock your certificate. You are ${p.pct}% of the way there.</p><a class="btn" href="#/course/${c.id}">Back to course</a>`;
+      return;
+    }
+    const cert = ctx.certificates[c.id];
+    view.innerHTML = `
+<h1 class="sr-only">Certificate: ${esc(c.title)}</h1>
+<div class="cert-actions no-print"><a class="btn btn-ghost" href="#/course/${c.id}">← Back</a><button class="btn" id="print-btn">Print / Save as PDF</button></div>
+${certificateHtml({
+  name: state.learner.name || "Learner",
+  courseTitle: c.title,
+  date: cert ? cert.issuedAt : S.completionDate(c, state),
+  modules: c.modules.length,
+  hours: c.hours,
+  code: cert && cert.code,
+})}`;
+    document.getElementById("print-btn").addEventListener("click", () => window.print());
+  }
+
+  function verifyView(code) {
+    view.innerHTML = `
+<h1>Verify a certificate</h1>
+<p class="lead">Enter the certificate ID printed at the bottom of a ${esc(SITE.name)} certificate.</p>
+<form id="verify-form" class="row"><input id="verify-code" placeholder="KBP-XXXX-XXXX-XXXX" value="${esc(code || "")}" aria-label="Certificate ID" /><button class="btn">Verify</button></form>
+<div id="verify-result"></div>`;
+    const out = document.getElementById("verify-result");
+    const check = async (value) => {
+      if (!isServer()) {
+        out.innerHTML = `<p class="muted">Verification needs the hosted version of ${esc(SITE.name)} with its server running.</p>`;
+        return;
+      }
+      try {
+        const d = await API.verify(value.trim().toUpperCase());
+        out.innerHTML = `<div class="card result pass"><h2>✓ Valid certificate</h2><p><strong>${esc(d.name)}</strong> completed <strong>${esc(d.courseTitle)}</strong> on ${fmtDate(d.issuedAt)}.</p><p class="muted small">ID ${esc(d.code)}</p></div>`;
+      } catch (err) {
+        out.innerHTML = `<div class="card result fail"><h2>Not found</h2><p>${esc(err.status === 404 ? "No certificate matches that ID. Check it for typos." : err.message)}</p></div>`;
+      }
+    };
+    document.getElementById("verify-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const v = document.getElementById("verify-code").value;
+      if (v.trim()) location.hash = `#/verify/${encodeURIComponent(v.trim().toUpperCase())}`;
+    });
+    if (code) check(code);
+  }
+
+  function profileView() {
+    const server = isServer();
+    view.innerHTML = `
+<h1>Profile & data</h1>
+<section class="card">
+  <h2>Your name</h2>
+  <p class="muted">Shown on your dashboard and on certificates.</p>
+  <form id="profile-form" class="row"><input id="pname" maxlength="80" required value="${esc(state.learner.name)}" aria-label="Your name" /><button class="btn">Save</button></form>
+  ${server ? `<p class="muted small">Signed in as ${esc(ctx.user.email)} (${esc(ctx.user.role)}).</p>` : ""}
+</section>
+<section class="card">
+  <h2>${server ? "Your data" : "Backup & transfer"}</h2>
+  <p class="muted">${server ? "Your progress is saved to your account, so you can sign in from any device. You can download a copy." : "Progress is stored in this browser only. Export it to move to another device."}</p>
+  <div class="row">
+    <button class="btn btn-ghost" id="export">⬇ Export progress</button>
+    ${server ? "" : '<label class="btn btn-ghost file-btn">⬆ Import progress<input type="file" id="import" accept="application/json" hidden /></label>'}
+  </div>
+  <p id="data-msg" class="muted small" role="status"></p>
+</section>
+<section class="card danger">
+  <h2>Reset</h2>
+  <p class="muted">Erase all lesson progress and quiz scores${server ? "" : " and your name from this browser"}.${server ? " Certificates you have already earned remain valid." : ""}</p>
+  <button class="btn btn-danger" id="reset">Reset all progress</button>
+</section>`;
+
+    const form = document.getElementById("profile-form");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      await busy(form.querySelector("button"), () => backend.setName(document.getElementById("pname").value.trim().slice(0, 80)));
+      renderNav();
+      toast("Saved.", "ok");
+    });
+    document.getElementById("export").addEventListener("click", () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "learning-progress.json";
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
+    const imp = document.getElementById("import");
+    if (imp)
+      imp.addEventListener("change", async (e) => {
+        const file = e.target.files[0];
+        const msg = document.getElementById("data-msg");
+        if (!file) return;
+        try {
+          state = S.normalize(JSON.parse(await file.text()));
+          persist();
+          msg.textContent = "Progress imported.";
+          document.getElementById("pname").value = state.learner.name;
+        } catch (err) {
+          msg.textContent = "That file could not be read as progress data.";
+        }
+      });
+    const resetBtn = document.getElementById("reset");
+    resetBtn.addEventListener("click", async () => {
+      if (!confirm("Erase all progress? This cannot be undone.")) return;
+      await busy(resetBtn, () => backend.reset());
+      location.hash = "#/";
+    });
+  }
+
+  // ---------- Account views (server mode) ----------
+
+  function authView(kind) {
+    if (!isServer()) return notFound();
+    if (ctx.user) return (location.hash = "#/");
+    const register = kind === "register";
+    view.innerHTML = `
+<div class="auth">
+  <h1>${register ? "Create your account" : "Sign in"}</h1>
+  <p class="lead">${register ? "Save your progress, earn verifiable certificates and pick up on any device." : `Welcome back to ${esc(SITE.name)}.`}</p>
+  <form id="auth-form" class="card stack">
+    ${register ? '<label>Full name<input name="name" maxlength="80" autocomplete="name" required /></label>' : ""}
+    <label>Email<input name="email" type="email" autocomplete="email" required /></label>
+    <label>Password<input name="password" type="password" minlength="${register ? 8 : 1}" autocomplete="${register ? "new-password" : "current-password"}" required />${register ? '<span class="muted small">At least 8 characters.</span>' : ""}</label>
+    <button class="btn">${register ? "Create account" : "Sign in"}</button>
+  </form>
+  <p class="muted">${register ? 'Already have an account? <a href="#/login">Sign in</a>' : 'New here? <a href="#/register">Create an account</a>'}</p>
+</div>`;
+    const form = document.getElementById("auth-form");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const f = new FormData(form);
+      const session = await busy(form.querySelector("button"), () =>
+        register ? API.register(f.get("name"), f.get("email"), f.get("password")) : API.login(f.get("email"), f.get("password"))
+      );
+      applySession(session);
+      renderNav();
+      location.hash = "#/";
+    });
+  }
+
+  async function signOut() {
+    try {
+      await API.logout();
+    } catch (e) {
+      /* the session is gone either way */
+    }
+    applySession(null);
+    renderNav();
+    location.hash = "#/login";
+  }
+
+  // ---------- Instructor views ----------
+
+  async function adminView() {
+    if (!isInstructor()) return forbidden();
+    view.innerHTML = `<h1>Instructor dashboard</h1><p class="muted">Loading learners…</p>`;
+    let data;
+    try {
+      data = await API.learners();
+    } catch (err) {
+      view.innerHTML = `<h1>Instructor dashboard</h1><p class="lead">${esc(err.message)}</p>`;
+      return;
+    }
+    const learners = data.learners;
+    const weekAgo = Date.now() - 7 * 864e5;
+    const active = learners.filter((l) => l.lastActive && new Date(l.lastActive).getTime() > weekAgo).length;
+    const courseStats = COURSES.map((c) => {
+      const pcts = learners.map((l) => l.courses[c.id]);
+      return {
+        c,
+        started: pcts.filter((p) => p > 0).length,
+        completed: pcts.filter((p) => p === 100).length,
+        avg: pcts.length ? Math.round(pcts.reduce((a, b) => a + b, 0) / pcts.length) : 0,
+      };
+    });
+
+    view.innerHTML = `
+<h1>Instructor dashboard</h1>
+<p class="lead">Progress for everyone with an account.</p>
+<section class="stats">
+  <div class="stat"><span class="stat-num">${learners.length}</span><span class="stat-label">Registered users</span></div>
+  <div class="stat"><span class="stat-num">${active}</span><span class="stat-label">Active in last 7 days</span></div>
+  <div class="stat"><span class="stat-num">${data.certificatesIssued}</span><span class="stat-label">Certificates issued</span></div>
+  <div class="stat"><span class="stat-num">${courseStats.length ? Math.round(courseStats.reduce((a, s) => a + s.avg, 0) / courseStats.length) : 0}%</span><span class="stat-label">Avg. course progress</span></div>
+</section>
+<h2 class="section-gap">Courses</h2>
+<div class="table-wrap"><table class="data-table">
+  <thead><tr><th>Course</th><th>Started</th><th>Completed</th><th>Avg. progress</th></tr></thead>
+  <tbody>${courseStats
+    .map((s) => `<tr><td>${esc(s.c.title)}</td><td>${s.started}</td><td>${s.completed}</td><td><div class="cell-bar">${progressBar(s.avg, s.c.title)}<span>${s.avg}%</span></div></td></tr>`)
+    .join("")}</tbody>
+</table></div>
+<div class="row section-gap between">
+  <h2>Learners</h2>
+  <div class="row"><input type="search" id="learner-search" placeholder="Search name or email…" aria-label="Search learners" /><a class="btn btn-ghost" href="api/admin/export.csv" download>⬇ Export CSV</a></div>
+</div>
+<div class="table-wrap"><table class="data-table">
+  <thead><tr><th>Name</th><th>Role</th>${COURSES.map((c) => `<th title="${esc(c.title)}">${esc(shortTitle(c.title))}</th>`).join("")}<th>Avg. quiz</th><th>Last active</th></tr></thead>
+  <tbody id="learner-rows"></tbody>
+</table></div>`;
+
+    const tbody = document.getElementById("learner-rows");
+    const search = document.getElementById("learner-search");
+    const draw = () => {
+      const q = search.value.trim().toLowerCase();
+      const rows = learners.filter((l) => !q || l.name.toLowerCase().includes(q) || l.email.toLowerCase().includes(q));
+      tbody.innerHTML =
+        rows
+          .map(
+            (l) => `<tr>
+  <td><a href="#/admin/learner/${l.id}">${esc(l.name)}</a><br /><span class="muted small">${esc(l.email)}</span></td>
+  <td><span class="badge${l.role === "instructor" ? " badge-both" : ""}">${esc(l.role)}</span></td>
+  ${COURSES.map((c) => `<td><div class="cell-bar">${progressBar(l.courses[c.id], c.title)}<span>${l.courses[c.id]}%</span></div></td>`).join("")}
+  <td>${l.avgQuiz === null ? "-" : l.avgQuiz + "%"}</td>
+  <td class="small">${l.lastActive ? fmtDate(l.lastActive) : '<span class="muted">Never</span>'}</td>
+</tr>`
+          )
+          .join("") || `<tr><td colspan="${COURSES.length + 4}" class="muted">No matching learners.</td></tr>`;
+    };
+    search.addEventListener("input", draw);
+    draw();
+  }
+
+  function shortTitle(t) {
+    return t.replace(/^The /, "").split(/[ &]/).slice(0, 2).join(" ");
+  }
+
+  async function adminLearnerView(id) {
+    if (!isInstructor()) return forbidden();
+    view.innerHTML = `<p class="muted">Loading…</p>`;
+    let d;
+    try {
+      d = await API.learner(id);
+    } catch (err) {
+      view.innerHTML = `<h1>Learner</h1><p class="lead">${esc(err.message)}</p><a class="btn" href="#/admin">Back</a>`;
+      return;
+    }
+    const st = S.normalize(d.state);
+    const courses = COURSES.map((c) => {
+      const p = S.courseProgress(c, st);
+      const cert = d.certificates[c.id];
+      const mods = c.modules
+        .map((m) => {
+          const q = st.quizzes[S.quizKey(c.id, m.id)];
+          const lessonsDone = m.lessons.filter((l) => st.lessons[S.lessonKey(c.id, m.id, l.id)]).length;
+          return `<tr><td>${esc(m.title)}</td><td>${lessonsDone}/${m.lessons.length}</td><td>${q ? `${q.best}% best · ${q.attempts} attempt${q.attempts > 1 ? "s" : ""}${q.passed ? " ✓" : ""}` : '<span class="muted">Not taken</span>'}</td></tr>`;
+        })
+        .join("");
+      return `<section class="card"><div class="row between"><h3>${esc(c.title)}</h3><strong>${p.pct}%</strong></div>${progressBar(p.pct, c.title)}
+        ${cert ? `<p class="small">🎓 Certificate <strong>${esc(cert.code)}</strong> issued ${fmtDate(cert.issuedAt)}</p>` : ""}
+        <div class="table-wrap"><table class="data-table compact"><thead><tr><th>Module</th><th>Lessons</th><th>Quiz</th></tr></thead><tbody>${mods}</tbody></table></div></section>`;
+    }).join("");
+    const isSelf = d.user.id === ctx.user.id;
+
+    view.innerHTML = `
+<nav class="crumbs"><a href="#/admin">Instructor dashboard</a> / <span>${esc(d.user.name)}</span></nav>
+<header class="row between">
+  <div><h1>${esc(d.user.name)}</h1><p class="muted">${esc(d.user.email)} · joined ${fmtDate(d.user.createdAt)} · last active ${d.lastActive ? fmtDate(d.lastActive) : "never"}</p></div>
+  <div class="row"><span class="badge${d.user.role === "instructor" ? " badge-both" : ""}">${esc(d.user.role)}</span>
+    <button class="btn btn-ghost btn-sm" id="role-btn">${d.user.role === "instructor" ? "Make learner" : "Make instructor"}</button></div>
+</header>
+<div class="two-col">
+  <section>${courses}</section>
+  <aside><h2>Recent activity</h2>${
+    st.activity.length
+      ? `<ul class="activity">${st.activity.slice(0, 15).map((a) => `<li><span>${esc(a.text)}</span><time class="muted small">${fmtDate(a.at)}</time></li>`).join("")}</ul>`
+      : '<p class="muted">No activity yet.</p>'
+  }</aside>
+</div>`;
+
+    const roleBtn = document.getElementById("role-btn");
+    roleBtn.addEventListener("click", async () => {
+      const role = d.user.role === "instructor" ? "learner" : "instructor";
+      if (isSelf && !confirm("Remove your own instructor access?")) return;
+      await busy(roleBtn, () => API.setRole(d.user.id, role));
+      if (isSelf) {
+        ctx.user.role = role;
+        renderNav();
+        location.hash = "#/";
+        return;
+      }
+      toast(`${d.user.name} is now ${role === "instructor" ? "an instructor" : "a learner"}.`, "ok");
+      adminLearnerView(id);
+    });
+  }
+
+  function forbidden() {
+    view.innerHTML = `<h1>Instructors only</h1><p class="lead">You need instructor access to see this page.</p><a class="btn" href="#/">Go to dashboard</a>`;
+  }
+
+  function notFound() {
+    view.innerHTML = `<h1>Page not found</h1><p class="lead">That page doesn't exist.</p><a class="btn" href="#/">Go to dashboard</a>`;
+  }
+
+  // ---------- Navigation & router ----------
+
+  function renderNav() {
+    const nav = document.getElementById("nav");
+    const signedOut = isServer() && !ctx.user;
+    const links = signedOut
+      ? [
+          ["#/login", "login", "🔑", "Sign in"],
+          ["#/register", "register", "✍️", "Create account"],
+          ["#/calendar", "calendar", "🗓️", "Budget calendar"],
+          ["#/glossary", "glossary", "🔤", "Glossary"],
+          ["#/verify", "verify", "✅", "Verify certificate"],
+        ]
+      : [
+          ["#/", "dashboard", "🏠", "Dashboard"],
+          ["#/courses", "courses", "📚", "Courses"],
+          ["#/calendar", "calendar", "🗓️", "Budget calendar"],
+          ["#/glossary", "glossary", "🔤", "Glossary"],
+          ["#/profile", "profile", "👤", "Profile & data"],
+          ...(isInstructor() ? [["#/admin", "admin", "📊", "Instructor"]] : []),
+          ...(isServer() ? [["#/verify", "verify", "✅", "Verify certificate"]] : []),
+        ];
+    nav.innerHTML = `
+${links.map(([href, key, icon, label]) => `<a href="${href}" data-nav="${key}"><span aria-hidden="true">${icon}</span> ${label}</a>`).join("")}
+${isServer() && ctx.user ? `<div class="nav-user"><span class="small">${esc(ctx.user.name)}</span><button class="link-btn" id="signout">Sign out</button></div>` : ""}
+<p class="nav-note">${esc(SITE.disclaimer)}${isServer() ? "" : " Progress is saved in this browser."}</p>`;
+    const so = document.getElementById("signout");
+    if (so) so.addEventListener("click", signOut);
+  }
+
+  const PUBLIC_ROUTES = new Set(["login", "register", "verify", "calendar", "glossary"]);
+
+  const routes = [
+    [/^\/?$/, dashboard, "dashboard"],
+    [/^\/courses$/, catalog, "courses"],
+    [/^\/course\/([\w-]+)$/, courseView, "courses"],
+    [/^\/lesson\/([\w-]+)\/([\w-]+)\/([\w-]+)$/, lessonView, "courses"],
+    [/^\/quiz\/([\w-]+)\/([\w-]+)$/, quizView, "courses"],
+    [/^\/calendar$/, calendarView, "calendar"],
+    [/^\/glossary$/, glossaryView, "glossary"],
+    [/^\/certificate\/([\w-]+)$/, certificateView, "courses"],
+    [/^\/profile$/, profileView, "profile"],
+    [/^\/login$/, () => authView("login"), "login"],
+    [/^\/register$/, () => authView("register"), "register"],
+    [/^\/verify(?:\/([\w-]+))?$/, verifyView, "verify"],
+    [/^\/admin$/, adminView, "admin"],
+    [/^\/admin\/learner\/(\d+)$/, adminLearnerView, "admin"],
+  ];
+
+  async function render() {
+    const path = (location.hash || "#/").slice(1);
+    let match = null;
+    for (const [re, fn, nav] of routes) {
+      const m = path.match(re);
+      if (m) {
+        match = { fn, nav, args: m.slice(1) };
+        break;
+      }
+    }
+    if (match && isServer() && !ctx.user && !PUBLIC_ROUTES.has(match.nav)) {
+      location.hash = "#/login";
+      return;
+    }
+    document.querySelectorAll(".nav a").forEach((a) => a.classList.toggle("active", !!match && a.dataset.nav === match.nav));
+    document.body.classList.remove("nav-open");
+    window.scrollTo(0, 0);
+    if (match) await match.fn(...match.args);
+    else notFound();
+    const h1 = view.querySelector("h1");
+    document.title = (h1 ? h1.textContent.trim() + " · " : "") + SITE.name;
+    view.focus({ preventScroll: true });
+  }
+
+  async function init() {
+    document.querySelectorAll("[data-site-name]").forEach((el) => (el.textContent = SITE.name));
+    document.querySelectorAll("[data-site-tagline]").forEach((el) => (el.textContent = SITE.tagline));
+    window.addEventListener("unhandledrejection", (e) => {
+      if (e.reason && e.reason.handled) e.preventDefault();
+    });
+    document.getElementById("menu-toggle").addEventListener("click", () => document.body.classList.toggle("nav-open"));
+
+    const found = await API.detect();
+    ctx.mode = found.mode;
+    if (ctx.mode === "server") applySession(found.session);
+    else state = S.load(storage);
+
+    renderNav();
+    window.addEventListener("hashchange", render);
+    render();
+  }
+
+  init();
+})();
+
+</script>
+  </body>
+</html>
